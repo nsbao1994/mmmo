@@ -10,30 +10,29 @@ from firebase_admin import db
 # 1. Khởi tạo Firebase (Chỉ khởi tạo 1 lần để tránh lỗi khi Vercel chạy lại hàm)
 if not firebase_admin._apps:
     # Lấy thông tin chứng chỉ Firebase từ biến môi trường của Vercel
-    firebase_cert_str = os.environ.get('
-  
-')
+    firebase_cert_str = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
+    
     # Parse chuỗi JSON thành dictionary
     firebase_cert = json.loads(firebase_cert_str)
     
     cred = credentials.Certificate(firebase_cert)
     
-    # THAY ĐỔI ĐƯỜNG LINK DATABASE CỦA BẠN VÀO ĐÂY
+    # Đã sửa lại đường link Database URL chuẩn
     firebase_admin.initialize_app(cred, {
-        'databaseURL': '[https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/](https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/)' 
+        'databaseURL': 'https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/' 
     })
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             # 2. Khởi tạo Gemini Client
-            gemini_api_key = os.environ.get('')
+            gemini_api_key = os.environ.get('GEMINI_API_KEY')
             if not gemini_api_key:
                 raise ValueError("Chưa thiết lập biến môi trường GEMINI_API_KEY")
                 
             client = genai.Client(api_key=gemini_api_key)
 
-            # 3. Kịch bản Prompt mẫu (Tạm thời test bằng 1 sản phẩm fix cứng)
+            # 3. Kịch bản Prompt mẫu
             ten_san_pham = "Mạch hạ áp LM2596"
             prompt = f"""
             Hãy đóng vai một thợ điện tử. Viết một bài đánh giá ngắn khoảng 300 chữ về sản phẩm: "{ten_san_pham}".
