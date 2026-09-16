@@ -10,7 +10,9 @@ from firebase_admin import db
 # 1. Khởi tạo Firebase (Chỉ khởi tạo 1 lần để tránh lỗi khi Vercel chạy lại hàm)
 if not firebase_admin._apps:
     # Lấy thông tin chứng chỉ Firebase từ biến môi trường của Vercel
-    firebase_cert_str = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
+    firebase_cert_str = os.environ.get('
+  
+')
     # Parse chuỗi JSON thành dictionary
     firebase_cert = json.loads(firebase_cert_str)
     
@@ -25,7 +27,7 @@ class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
             # 2. Khởi tạo Gemini Client
-            gemini_api_key = os.environ.get('AQ.Ab8RN6Iwv7Pwp0M8bBhbZ8acbMYPoS0twasFcqwEFSBK2gUoLA')
+            gemini_api_key = os.environ.get('')
             if not gemini_api_key:
                 raise ValueError("Chưa thiết lập biến môi trường GEMINI_API_KEY")
                 
