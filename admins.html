@@ -17,46 +17,50 @@
     <p id="status"></p>
 
     <div class="box">
-        <h3>1. Thêm chủ đề cho Gemini viết tự động</h3>
-        <p>Nhập từ khóa hoặc link sản phẩm Shopee (Mỗi ngày Bot sẽ lấy 1 cái ra viết):</p>
-        <input type="text" id="topicInput" placeholder="VD: Đánh giá mạch sạc pin Lithium 18650">
+        <h3>1. Thêm chủ đề và Link Shopee Affiliate</h3>
+        <label>Chủ đề / Tên sản phẩm:</label>
+        <input type="text" id="topicInput" placeholder="VD: Mạch hạ áp LM2596">
+        
+        <label>Link Affiliate Shopee:</label>
+        <input type="text" id="shopeeLinkInput" placeholder="VD: https://shope.ee/Mã_của_bạn hoặc link sản phẩm">
+        
         <button onclick="addTopic()">Thêm vào hàng đợi</button>
     </div>
 
     <div class="box">
-        <h3>2. Cài đặt mã Quảng cáo (Adsense / MGID)</h3>
-        <textarea id="adCode" rows="4" placeholder="Dán mã thẻ <script> quảng cáo vào đây..."></textarea>
+        <h3>2. Cài đặt mã Quảng cáo (Ads)</h3>
+        <textarea id="adCode" rows="4" placeholder="Dán mã quảng cáo vào đây..."></textarea>
         <button onclick="saveSettings()">Lưu cấu hình Ads</button>
     </div>
 
-    <!-- Nhúng Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
         import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-        // THAY BẰNG LINK FIREBASE CỦA BẠN
         const firebaseConfig = {
             databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Hàm thêm chủ đề vào nhánh 'queue'
         window.addTopic = function() {
             const topic = document.getElementById('topicInput').value;
+            const shopeeLink = document.getElementById('shopeeLinkInput').value;
+            
             if(!topic) return alert("Vui lòng nhập chủ đề!");
             
             push(ref(db, 'queue'), { 
                 keyword: topic,
+                shopee_link: shopeeLink || "https://shopee.vn",
                 added_at: Date.now()
             }).then(() => {
-                document.getElementById('status').innerText = "✅ Đã thêm chủ đề vào hàng đợi!";
+                document.getElementById('status').innerText = "✅ Đã thêm chủ đề kèm link Shopee!";
                 document.getElementById('topicInput').value = "";
+                document.getElementById('shopeeLinkInput').value = "";
                 setTimeout(() => document.getElementById('status').innerText = "", 3000);
             });
         }
 
-        // Hàm lưu mã ads vào nhánh 'settings'
         window.saveSettings = function() {
             const code = document.getElementById('adCode').value;
             set(ref(db, 'settings/ads'), { html_code: code }).then(() => {
