@@ -2,9 +2,87 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Tin Tức Công Nghệ & Review</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tin Tức Công Nghệ & Review Tự Động</title>
+    <!-- Giao diện cơ bản để nhìn cho đẹp -->
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f0f2f5; }
+        h1 { text-align: center; color: #1877f2; margin-bottom: 30px; }
+        .article { background: white; padding: 25px; border-radius: 10px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .article h2 { color: #1c1e21; margin-top: 0; font-size: 1.5em; }
+        .article p { line-height: 1.6; color: #4b4f56; }
+        .time { color: #8a8d91; font-size: 0.85em; margin-bottom: 15px; border-bottom: 1px solid #e4e6eb; padding-bottom: 10px; }
+        .loading { text-align: center; color: #666; font-style: italic; font-size: 1.2em; padding: 50px; }
+        
+        /* CSS cho nút Affiliate mua hàng từ Shopee nếu AI sinh ra */
+        .buy-button { display: inline-block; background-color: #ee4d2d; color: white !important; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 15px; transition: background 0.3s; }
+        .buy-button:hover { background-color: #d73d22; }
+    </style>
 </head>
 <body>
-    <h1>Trang web Auto MMO đang được xây dựng...</h1>
+    <h1>🚀 The Rebuild Garage - Tin tức tự động</h1>
+    
+    <div id="news-container">
+        <p class="loading">⏳ Đang kết nối dữ liệu từ Firebase...</p>
+    </div>
+
+    <!-- 1. Nhúng thư viện Firebase SDK (Bản module) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+        // 2. Cấu hình Firebase của bạn
+        // THAY ĐỔI ĐƯỜNG LINK DATABASE NÀY BẰNG LINK CỦA DỰ ÁN BẠN
+        const firebaseConfig = {
+            databaseURL: "https://ten-du-an-cua-ban-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+
+        // 3. Khởi tạo kết nối
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // 4. Lấy dữ liệu 10 bài viết mới nhất từ nhánh 'articles' (Giới hạn 10 để load nhanh)
+        const recentArticlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(10));
+        
+        // Lắng nghe dữ liệu theo thời gian thực (Realtime)
+        onValue(recentArticlesRef, (snapshot) => {
+            const container = document.getElementById('news-container');
+            container.innerHTML = ''; // Xóa chữ "Đang kết nối..."
+            
+            if (!snapshot.exists()) {
+                container.innerHTML = '<p style="text-align:center;">Chưa có bài viết nào được AI tự động sinh ra.</p>';
+                return;
+            }
+
+            // Firebase trả về dữ liệu dạng object, cần chuyển thành mảng và đảo ngược để bài mới nhất lên đầu
+            const articles = [];
+            snapshot.forEach((childSnapshot) => {
+                articles.push(childSnapshot.val());
+            });
+            articles.reverse(); // Đảo ngược mảng
+
+            // 5. Render từng bài viết ra màn hình
+            articles.forEach(article => {
+                // Chuyển timestamp (milliseconds) thành ngày giờ theo định dạng VN
+                const date = new Date(article.timestamp);
+                const timeString = date.toLocaleString('vi-VN');
+
+                const articleDiv = document.createElement('div');
+                articleDiv.className = 'article';
+                
+                // Do đoạn code Python của chúng ta ra lệnh cho AI sinh ra HTML,
+                // nên ở đây ta nhúng thẳng article.content vào HTML.
+                articleDiv.innerHTML = `
+                    <div class="time">🕒 Cập nhật lúc: ${timeString}</div>
+                    <div class="content">${article.content}</div>
+                `;
+                
+                container.appendChild(articleDiv);
+            });
+        }, (error) => {
+            console.error("Lỗi khi tải dữ liệu Firebase:", error);
+            document.getElementById('news-container').innerHTML = '<p style="color:red; text-align:center;">Lỗi kết nối CSDL. Vui lòng kiểm tra lại luật Database Firebase (Rules).</p>';
+        });
+    </script>
 </body>
 </html>
