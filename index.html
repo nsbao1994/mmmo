@@ -138,40 +138,48 @@
         }
 
         // Hàm render danh sách bài viết ra giao diện HTML
-        function displayArticles(articles) {
-            const container = document.getElementById('news-container');
-            container.innerHTML = '';
+       // Hàm render danh sách bài viết ra giao diện HTML
+function displayArticles(articles) {
+    const container = document.getElementById('news-container');
+    container.innerHTML = '';
 
-            if (articles.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">Không có bài viết nào trong danh mục này.</p>';
-                return;
-            }
+    if (articles.length === 0) {
+        container.innerHTML = '<p style="text-align:center;">Không có bài viết nào trong danh mục này.</p>';
+        return;
+    }
 
-            articles.forEach(article => {
-                const date = new Date(article.timestamp).toLocaleString('vi-VN');
-                
-                // Xử lý hiển thị Hashtag
-                let tagsHtml = '';
-                if (article.hashtags && Array.isArray(article.hashtags)) {
-                    tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
-                }
-
-                const articleDiv = document.createElement('div');
-                articleDiv.className = 'article';
-                
-                articleDiv.innerHTML = `
-                    <h2>${article.title || 'Bài viết kỹ thuật'}</h2>
-                    <div class="meta">
-                        <span class="badge">${article.category || 'Tổng hợp'}</span>
-                        <span>🕒 ${date}</span>
-                    </div>
-                    <div class="content">${article.content || ''}</div>
-                    ${tagsHtml}
-                `;
-                
-                container.appendChild(articleDiv);
-            });
+    articles.forEach(article => {
+        const date = new Date(article.timestamp).toLocaleString('vi-VN');
+        
+        // Xử lý hiển thị Hashtag
+        let tagsHtml = '';
+        if (article.hashtags && Array.isArray(article.hashtags)) {
+            tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
         }
+
+        // Tự động tạo nút Shopee chuẩn xác 100% dựa vào link bạn nhập từ Admin
+        let buttonHtml = '';
+        if (article.shopee_link) {
+            buttonHtml = `<div style="margin-top: 20px;"><a href="${article.shopee_link}" target="_blank" class="buy-button">🛒 Mua Sản Phẩm / Xem Giá Ưu Đãi trên Shopee</a></div>`;
+        }
+
+        const articleDiv = document.createElement('div');
+        articleDiv.className = 'article';
+        
+        articleDiv.innerHTML = `
+            <h2>${article.title || 'Bài viết kỹ thuật'}</h2>
+            <div class="meta">
+                <span class="badge">${article.category || 'Tổng hợp'}</span>
+                <span>🕒 ${date}</span>
+            </div>
+            <div class="content">${article.content || ''}</div>
+            ${buttonHtml}
+            ${tagsHtml}
+        `;
+        
+        container.appendChild(articleDiv);
+    });
+}
     </script>
 </body>
 </html>
