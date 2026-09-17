@@ -240,25 +240,29 @@
                 }
 
                // --- CHÈN GIAO DIỆN SHOPEE MỚI VÀO ĐÂY ---
+               // --- BẢN NÂNG CẤP: TOÀN BỘ KHUNG ĐỀU CLICK ĐƯỢC ---
                 let buttonHtml = '';
                 if (article.shopee_link) {
                     buttonHtml = `
-                        <div class="shopee-box">
-                            <div class="shopee-box-img">
-                                <img src="${imageUrl}" alt="Sản phẩm" onerror="this.src='https://picsum.photos/seed/${article.id}/300/300'">
+                        <a href="${article.shopee_link}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
+                            <div class="shopee-box">
+                                <div class="shopee-box-img">
+                                    <img src="${imageUrl}" alt="Sản phẩm" onerror="this.src='https://picsum.photos/seed/${article.id}/300/300'">
+                                </div>
+                                <div class="shopee-box-info">
+                                    <div class="shopee-box-title">🛒 ${article.title}</div>
+                                    <div class="shopee-box-price">Giá ưu đãi: <span>Xem trên web</span></div>
+                                    <div class="shopee-box-desc">🔥 Đang có Mã Giảm Giá & Freeship Extra</div>
+                                    <span class="shopee-box-btn">
+                                        Đến Nơi Bán &rarr;
+                                    </span>
+                                </div>
                             </div>
-                            <div class="shopee-box-info">
-                                <div class="shopee-box-title">🛒 ${article.title}</div>
-                                <div class="shopee-box-price">Giá ưu đãi: <span>Xem trên web</span></div>
-                                <div class="shopee-box-desc">🔥 Đang có Mã Giảm Giá & Freeship Extra</div>
-                                <a href="${article.shopee_link}" target="_blank" class="shopee-box-btn">
-                                    Đến Nơi Bán &rarr;
-                                </a>
-                            </div>
-                        </div>
+                        </a>
                     `;
                 }
-                // ------------------------------------------
+                // ----------------------------------------------------
+             
 
                 container.innerHTML = `
                     <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
