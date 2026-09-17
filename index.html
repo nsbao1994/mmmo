@@ -234,26 +234,21 @@
                 if (article.title) {
                     document.title = `${article.title} - DIY Việt Nam`;
                 }
-// --- XỬ LÝ ẢNH & GIÁ THÔNG MINH ---
-                // Ưu tiên ảnh bạn nhập, nếu không có mới gọi AI vẽ
+
+                // --- KHAI BÁO ẢNH & GIÁ 1 LẦN DUY NHẤT Ở ĐÂY ---
                 const promptText = article.image_prompt || article.title || 'technology product';
                 const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
+                
                 const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
-
-                // Ưu tiên giá bạn nhập, nếu không có thì hiện "Xem trên web"
                 const finalPrice = article.custom_price ? article.custom_price : "Xem trên web";
-                const promptText = article.image_prompt || article.title || 'technology product';
-                const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
+                // -----------------------------------------------
 
                 let tagsHtml = '';
                 if (article.hashtags && Array.isArray(article.hashtags)) {
                     tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
                 }
 
-               // --- CHÈN GIAO DIỆN SHOPEE MỚI VÀO ĐÂY ---
-               // --- BẢN NÂNG CẤP: TOÀN BỘ KHUNG ĐỀU CLICK ĐƯỢC ---
-               // (Nhớ cập nhật lại biến finalImageUrl cho thẻ <img> chính của bài viết nhé)
-
+                // KHUNG MUA HÀNG SHOPEE ƯU TIÊN GIÁ & ẢNH THẬT
                 let buttonHtml = '';
                 if (article.shopee_link) {
                     buttonHtml = `
@@ -274,7 +269,34 @@
                         </a>
                     `;
                 }
-                // ----------------------------------------------------
+
+                container.innerHTML = `
+                    <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
+                    <div class="article-detail">
+                        <h1>${article.title || 'Bài viết'}</h1>
+                        <div class="meta">
+                            <span class="badge">${article.category || 'Tổng hợp'}</span>
+                            <span>🕒 Cập nhật: ${date}</span>
+                        </div>
+                        
+                        <!-- ẢNH BÌA BÀI VIẾT ƯU TIÊN ẢNH THẬT -->
+                        <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
+                            <img src="${finalImageUrl}" alt="${article.title || ''}" style="width: 100%; height: auto; object-fit: cover;" onerror="this.src='https://picsum.photos/seed/${article.id}/1200/600'">
+                        </div>
+
+                        <div class="content">${article.content || ''}</div>
+                        ${buttonHtml}
+                        ${tagsHtml}
+                        
+                        <div class="share-box">
+                            <span class="share-title">📢 Chia sẻ bài viết:</span>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
+                            <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
+                        </div>
+                    </div>
+                `;
+            }
              
 
                 container.innerHTML = `
