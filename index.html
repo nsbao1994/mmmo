@@ -165,71 +165,86 @@
         }
 
         // Render Trang chủ dạng Lưới (Grid) hiện đại
-        function renderHomeGrid(articles) {
-            const container = document.getElementById('app-container');
-            container.innerHTML = '<div class="articles-grid" id="grid-list"></div>';
-            const gridList = document.getElementById('grid-list');
+       function renderHomeGrid(articles) {
+    const container = document.getElementById('app-container');
+    container.innerHTML = '<div class="articles-grid" id="grid-list"></div>';
+    const gridList = document.getElementById('grid-list');
 
-            articles.forEach(article => {
-                const date = new Date(article.timestamp).toLocaleDateString('vi-VN');
-                const cardDiv = document.createElement('div');
-                cardDiv.className = 'article-card';
-                cardDiv.dataset.category = article.category || 'Tổng hợp';
+    articles.forEach((article, index) => {
+        const date = new Date(article.timestamp).toLocaleDateString('vi-VN');
+        const cardDiv = document.createElement('div');
+        cardDiv.className = 'article-card';
+        cardDiv.dataset.category = article.category || 'Tổng hợp';
 
-                cardDiv.innerHTML = `
-                    <div class="card-body">
-                        <span class="badge">${article.category || 'Tổng hợp'}</span>
-                        <h2><a href="?id=${article.id}">${article.title || 'Bài viết kỹ thuật'}</a></h2>
-                    </div>
-                    <div class="card-footer">
-                        <span style="font-size: 0.85em; color: #888;">🕒 ${date}</span>
-                        <a href="?id=${article.id}" class="read-more">Đọc tiếp &rarr;</a>
-                    </div>
-                `;
-                gridList.appendChild(cardDiv);
-            });
-        }
+        // Tạo một ảnh minh họa tự động độc quyền dựa trên ID bài viết
+        const imageUrl = `https://picsum.photos/seed/${article.id || index}/600/350`;
+
+        cardDiv.innerHTML = `
+            <div style="height: 180px; overflow: hidden; background: #e9ecef;">
+                <a href="?id=${article.id}">
+                    <img src="${imageUrl}" alt="${article.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                </a>
+            </div>
+            <div class="card-body">
+                <span class="badge">${article.category || 'Tổng hợp'}</span>
+                <h2><a href="?id=${article.id}">${article.title || 'Bài viết kỹ thuật'}</a></h2>
+            </div>
+            <div class="card-footer">
+                <span style="font-size: 0.85em; color: #888;">🕒 ${date}</span>
+                <a href="?id=${article.id}" class="read-more">Đọc tiếp &rarr;</a>
+            </div>
+        `;
+        gridList.appendChild(cardDiv);
+    });
+}
 
         // Render Trang chi tiết có nút Share mạng xã hội
-        function renderArticleDetail(article) {
-            document.title = `${article.title} - DIY Việt Nam`;
-            document.getElementById('menu-bar').style.display = 'none';
-            const container = document.getElementById('app-container');
-            const date = new Date(article.timestamp).toLocaleString('vi-VN');
-            const currentUrl = window.location.href;
+       function renderArticleDetail(article) {
+    document.getElementById('menu-bar').style.display = 'none';
+    const container = document.getElementById('app-container');
+    const date = new Date(article.timestamp).toLocaleString('vi-VN');
+    const currentUrl = window.location.href;
+    const imageUrl = `https://picsum.photos/seed/${article.id}/1200/600`;
+    
+    document.title = `${article.title} - DIY Việt Nam`;
+
+    let tagsHtml = '';
+    if (article.hashtags && Array.isArray(article.hashtags)) {
+        tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
+    }
+
+    let buttonHtml = '';
+    if (article.shopee_link) {
+        buttonHtml = `<div><a href="${article.shopee_link}" target="_blank" class="buy-button">🛒 Mua Sản Phẩm / Xem Giá Ưu Đãi trên Shopee</a></div>`;
+    }
+
+    container.innerHTML = `
+        <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
+        <div class="article-detail">
+            <h1>${article.title}</h1>
+            <div class="meta">
+                <span class="badge">${article.category || 'Tổng hợp'}</span>
+                <span>🕒 Cập nhật: ${date}</span>
+            </div>
             
-            let tagsHtml = '';
-            if (article.hashtags && Array.isArray(article.hashtags)) {
-                tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
-            }
+            <!-- Ảnh minh họa lớn ở đầu bài viết chi tiết -->
+            <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px;">
+                <img src="${imageUrl}" alt="${article.title}" style="width: 100%; height: auto; object-fit: cover;">
+            </div>
 
-            let buttonHtml = '';
-            if (article.shopee_link) {
-                buttonHtml = `<div><a href="${article.shopee_link}" target="_blank" class="buy-button">🛒 Mua Sản Phẩm / Xem Giá Ưu Đãi trên Shopee</a></div>`;
-            }
-
-            container.innerHTML = `
-                <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
-                <div class="article-detail">
-                    <h1>${article.title}</h1>
-                    <div class="meta">
-                        <span class="badge">${article.category || 'Tổng hợp'}</span>
-                        <span>🕒 Cập nhật: ${date}</span>
-                    </div>
-                    <div class="content">${article.content || ''}</div>
-                    ${buttonHtml}
-                    ${tagsHtml}
-                    
-                    <!-- Hộp Chia sẻ bài viết -->
-                    <div class="share-box">
-                        <span class="share-title">📢 Chia sẻ bài viết:</span>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
-                        <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
-                        <button onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
-                    </div>
-                </div>
-            `;
-        }
+            <div class="content">${article.content || ''}</div>
+            ${buttonHtml}
+            ${tagsHtml}
+            
+            <div class="share-box">
+                <span class="share-title">📢 Chia sẻ bài viết:</span>
+                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
+                <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
+                <button onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
+            </div>
+        </div>
+    `;
+}
         // Hàm tìm kiếm bài viết theo từ khóa
 window.searchArticles = function(keyword) {
     const cards = document.querySelectorAll('.article-card');
