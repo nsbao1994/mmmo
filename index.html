@@ -51,12 +51,7 @@
         .hashtags { margin-top: 20px; display: flex; gap: 6px; flex-wrap: wrap; }
         .tag { background: #f1f3f5; color: #495057; padding: 4px 10px; border-radius: 4px; font-size: 0.8em; font-weight: 500; }
 
-        .buy-button { display: inline-block; background-color: var(--accent-color); color: white !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1em; margin-top: 25px; box-shadow: 0 4px 10px rgba(238,77,45,0.3); transition: transform 0.2s, background 0.2s; }
-        .buy-button:hover { background-color: #d73d22; transform: translateY(-2px); }
-.buy-button { display: inline-block; background-color: var(--accent-color); color: white !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1em; margin-top: 25px; box-shadow: 0 4px 10px rgba(238,77,45,0.3); transition: transform 0.2s, background 0.2s; }
-        .buy-button:hover { background-color: #d73d22; transform: translateY(-2px); }
-
-        /* --- CHÈN CSS MỚI VÀO ĐÂY --- */
+        /* Giao diện khung Shopee */
         .shopee-box { display: flex; align-items: center; background: #fff; border: 2px dashed #ee4d2d; border-radius: 8px; padding: 15px; margin-top: 30px; margin-bottom: 20px; gap: 20px; box-shadow: 0 4px 10px rgba(238,77,45,0.08); transition: transform 0.2s; }
         .shopee-box:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(238,77,45,0.15); }
         .shopee-box-img { width: 130px; height: 130px; flex-shrink: 0; border-radius: 6px; overflow: hidden; border: 1px solid #eee; }
@@ -74,9 +69,7 @@
             .shopee-box-img { width: 100%; height: 200px; } 
             .shopee-box-btn { display: block; width: 100%; box-sizing: border-box; } 
         }
-        /* --------------------------- */
 
-        #ads-box { margin-bottom: 25px; text-align: center; }
         #ads-box { margin-bottom: 25px; text-align: center; }
         .loading { text-align: center; color: #666; font-style: italic; font-size: 1.1em; padding: 50px; }
     </style>
@@ -183,7 +176,7 @@
                 });
             }
 
-           function renderHomeGrid(articles) {
+            function renderHomeGrid(articles) {
                 const container = document.getElementById('app-container');
                 if (!container) return;
                 container.innerHTML = '<div class="articles-grid" id="grid-list"></div>';
@@ -195,11 +188,9 @@
                     cardDiv.className = 'article-card';
                     cardDiv.dataset.category = article.category || 'Tổng hợp';
 
-                    // --- ƯU TIÊN ẢNH THẬT CHO TRANG CHỦ ---
+                    // Xử lý ảnh cho trang chủ
                     const promptText = article.image_prompt || article.title || 'technology product';
                     const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=600&height=350&nologo=true`;
-                    
-                    // Nếu admin có nhập custom_img thì lấy ảnh đó, không thì dùng ảnh AI
                     const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
 
                     cardDiv.innerHTML = `
@@ -235,20 +226,18 @@
                     document.title = `${article.title} - DIY Việt Nam`;
                 }
 
-                // --- KHAI BÁO ẢNH & GIÁ 1 LẦN DUY NHẤT Ở ĐÂY ---
+                // Xử lý ảnh và giá cho trang chi tiết
                 const promptText = article.image_prompt || article.title || 'technology product';
                 const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
                 
                 const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
                 const finalPrice = article.custom_price ? article.custom_price : "Xem trên web";
-                // -----------------------------------------------
 
                 let tagsHtml = '';
                 if (article.hashtags && Array.isArray(article.hashtags)) {
                     tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
                 }
 
-                // KHUNG MUA HÀNG SHOPEE ƯU TIÊN GIÁ & ẢNH THẬT
                 let buttonHtml = '';
                 if (article.shopee_link) {
                     buttonHtml = `
@@ -279,37 +268,8 @@
                             <span>🕒 Cập nhật: ${date}</span>
                         </div>
                         
-                        <!-- ẢNH BÌA BÀI VIẾT ƯU TIÊN ẢNH THẬT -->
                         <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
                             <img src="${finalImageUrl}" alt="${article.title || ''}" style="width: 100%; height: auto; object-fit: cover;" onerror="this.src='https://picsum.photos/seed/${article.id}/1200/600'">
-                        </div>
-
-                        <div class="content">${article.content || ''}</div>
-                        ${buttonHtml}
-                        ${tagsHtml}
-                        
-                        <div class="share-box">
-                            <span class="share-title">📢 Chia sẻ bài viết:</span>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
-                            <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
-                            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
-                        </div>
-                    </div>
-                `;
-            }
-             
-
-                container.innerHTML = `
-                    <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
-                    <div class="article-detail">
-                        <h1>${article.title || 'Bài viết'}</h1>
-                        <div class="meta">
-                            <span class="badge">${article.category || 'Tổng hợp'}</span>
-                            <span>🕒 Cập nhật: ${date}</span>
-                        </div>
-                        
-                        <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
-                            <img src="${imageUrl}" alt="${article.title || ''}" style="width: 100%; height: auto; object-fit: cover;" onerror="this.src='https://picsum.photos/seed/${article.id}/1200/600'">
                         </div>
 
                         <div class="content">${article.content || ''}</div>
