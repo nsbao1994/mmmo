@@ -44,6 +44,8 @@ class handler(BaseHTTPRequestHandler):
             - "hashtags": Danh sách 4-5 thẻ hashtag liên quan (mảng string, ví dụ: ["#dodientu", "#dogiadung", "#review"])
             - "image_prompt": Một đoạn mô tả ngắn gọn bằng tiếng Anh để tạo hình ảnh AI minh họa cho sản phẩm/chủ đề này (ví dụ: "product photography of a modern electric fan on a table, clean studio lighting" hoặc "electronic circuit board close up") (string)
             - "content": Nội dung bài viết chi tiết định dạng HTML, chỉ dùng các thẻ <h2>, <p>, <ul>, <li> để trình bày bài viết (tuyệt đối không tự chèn thẻ a hay link Shopee vào trong nội dung) (string)
+           custom_img = item.get('custom_img', '')     # Lấy ảnh bạn nhập
+            custom_price = item.get('custom_price', '') # Lấy giá bạn nhập
             """
 
             response_text = ""
@@ -71,7 +73,7 @@ class handler(BaseHTTPRequestHandler):
 
             article_json = json.loads(response_text)
 
-            # Đẩy bài viết lên Firebase (đã bổ sung image_prompt)
+           # Đẩy bài viết lên Firebase
             articles_ref = db.reference('articles')
             new_article = {
                 'title': article_json.get('title'),
@@ -80,6 +82,8 @@ class handler(BaseHTTPRequestHandler):
                 'image_prompt': article_json.get('image_prompt'),
                 'content': article_json.get('content'),
                 'shopee_link': shopee_link,
+                'custom_img': custom_img,     # Lưu vào Database
+                'custom_price': custom_price, # Lưu vào Database
                 'timestamp': int(time.time() * 1000)
             }
             articles_ref.push(new_article)
