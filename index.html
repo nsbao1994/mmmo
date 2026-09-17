@@ -71,7 +71,12 @@
         <h1 onclick="window.location.href='?'">⚡ DIY Việt Nam</h1>
         <div class="slogan">Cẩm Nang Kỹ Thuật, Mạch Điện & Review Linh Kiện Chính Hãng</div>
     </header>
-
+<!-- Ô tìm kiếm bài viết -->
+<div style="text-align: center; margin-bottom: 25px;">
+    <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm mạch điện, linh kiện, mẹo DIY..." 
+           oninput="searchArticles(this.value)" 
+           style="width: 100%; max-width: 500px; padding: 12px 20px; border-radius: 25px; border: 1px solid #ddd; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.02); font-size: 0.95em;">
+</div>
     <div id="ads-box"></div>
 
     <div class="menu-container" id="menu-bar" style="display: none;">
@@ -187,6 +192,7 @@
 
         // Render Trang chi tiết có nút Share mạng xã hội
         function renderArticleDetail(article) {
+            document.title = `${article.title} - DIY Việt Nam`;
             document.getElementById('menu-bar').style.display = 'none';
             const container = document.getElementById('app-container');
             const date = new Date(article.timestamp).toLocaleString('vi-VN');
@@ -224,6 +230,20 @@
                 </div>
             `;
         }
+        // Hàm tìm kiếm bài viết theo từ khóa
+window.searchArticles = function(keyword) {
+    const cards = document.querySelectorAll('.article-card');
+    const query = keyword.toLowerCase().trim();
+
+    cards.forEach(card => {
+        const title = card.querySelector('h2').innerText.toLowerCase();
+        if (title.includes(query)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
     </script>
 </body>
 </html>
