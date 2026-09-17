@@ -278,7 +278,8 @@
                         
                         <div class="share-box">
                             <span class="share-title">📢 Chia sẻ bài viết:</span>
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
+                           <!-- Nút Share kèm sẵn Tiêu đề bài viết và Link -->
+<a href="https://www.facebook.com/intent/post?text=${encodeURIComponent(article.title + '\n' + currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
                             <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
                             <button onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
                         </div>
