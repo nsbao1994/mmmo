@@ -220,7 +220,9 @@
                 if (!container) return;
 
                 const date = article.timestamp ? new Date(article.timestamp).toLocaleString('vi-VN') : 'Mới cập nhật';
-                const currentUrl = window.location.href;
+                
+                // Đổi link chia sẻ hướng về file API Python
+                const shareUrl = window.location.origin + '/api/share?id=' + article.id;
                 
                 if (article.title) {
                     document.title = `${article.title} - DIY Việt Nam`;
@@ -278,10 +280,12 @@
                         
                         <div class="share-box">
                             <span class="share-title">📢 Chia sẻ bài viết:</span>
-                           <!-- Nút Share kèm sẵn Tiêu đề bài viết và Link -->
-<a href="https://www.facebook.com/intent/post?text=${encodeURIComponent(article.title + '\n' + currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
-                            <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
-                            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
+                            <!-- Dùng shareUrl cho Facebook -->
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
+                            <!-- Dùng shareUrl cho Zalo -->
+                            <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
+                            <!-- Nút copy link cũng copy link API -->
+                            <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
                         </div>
                     </div>
                 `;
