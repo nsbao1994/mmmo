@@ -37,12 +37,19 @@ class handler(BaseHTTPRequestHandler):
             client = genai.Client(api_key=gemini_api_key)
 
             # Prompt tinh gọn, tập trung vào nội dung chuyên môn, không bắt AI lo chuyện gắn link nữa
-            prompt = f"""
-            Đóng vai một chuyên gia review sản phẩm và viết bài hướng dẫn kỹ thuật chuyên sâu về chủ đề: "{keyword}".
+           prompt = f"""
+            Đóng vai một chuyên gia review sản phẩm và viết bài hướng dẫn kỹ thuật hoặc đánh giá chuyên sâu về chủ đề: "{keyword}".
             Yêu cầu đầu ra bắt buộc phải là một đối tượng JSON thuần túy (không chứa markdown như ```json hoặc ```), có đúng các trường sau:
-            - "title": Tiêu đề bài viết hấp dẫn (string)
-            - "category": Chọn 1 trong các danh mục sau cho phù hợp: "Linh kiện điện tử", "Năng lượng mặt trời", "Mẹo DIY" (string)
-            - "hashtags": Danh sách 4-5 thẻ hashtag liên quan (mảng string, ví dụ: ["#machhaap", "#dientu"])
+            - "title": Tiêu đề bài viết hấp dẫn, chuẩn SEO (string)
+            - "category": Chọn 1 trong các danh mục sau cho phù hợp nhất: 
+              "Linh kiện điện tử", 
+              "Đồ điện tử", 
+              "Đồ gia dụng", 
+              "Bàn ghế & Nội thất", 
+              "Thiết bị làm mát & Quạt", 
+              "Năng lượng mặt trời", 
+              "Mẹo DIY" (string)
+            - "hashtags": Danh sách 4-5 thẻ hashtag liên quan (mảng string, ví dụ: ["#dodientu", "#dogiadung", "#review"])
             - "content": Nội dung bài viết chi tiết định dạng HTML, chỉ dùng các thẻ <h2>, <p>, <ul>, <li> để trình bày bài viết (tuyệt đối không tự chèn thẻ a hay link Shopee vào trong nội dung) (string)
             """
 
