@@ -46,22 +46,28 @@
         const db = getDatabase(app);
 
         window.addTopic = function() {
-            const topic = document.getElementById('topicInput').value;
-            const shopeeLink = document.getElementById('shopeeLinkInput').value;
-            
-            if(!topic) return alert("Vui lòng nhập chủ đề!");
-            
-            push(ref(db, 'queue'), { 
-                keyword: topic,
-                shopee_link: shopeeLink || "https://shopee.vn",
-                added_at: Date.now()
-            }).then(() => {
-                document.getElementById('status').innerText = "✅ Đã thêm chủ đề kèm link Shopee!";
-                document.getElementById('topicInput').value = "";
-                document.getElementById('shopeeLinkInput').value = "";
-                setTimeout(() => document.getElementById('status').innerText = "", 3000);
-            });
-        }
+                const topic = document.getElementById('topicInput').value;
+                const shopeeLink = document.getElementById('shopeeLinkInput').value;
+                const img = document.getElementById('imgInput').value;
+                const price = document.getElementById('priceInput').value;
+                
+                if(!topic) return alert("Vui lòng nhập chủ đề!");
+                
+                push(ref(db, 'queue'), { 
+                    keyword: topic,
+                    shopee_link: shopeeLink || "https://shopee.vn",
+                    custom_img: img || "",      // Lưu ảnh tự nhập
+                    custom_price: price || "",  // Lưu giá tự nhập
+                    added_at: Date.now()
+                }).then(() => {
+                    document.getElementById('status').innerText = "✅ Đã thêm chủ đề!";
+                    document.getElementById('topicInput').value = "";
+                    document.getElementById('shopeeLinkInput').value = "";
+                    document.getElementById('imgInput').value = "";
+                    document.getElementById('priceInput').value = "";
+                    setTimeout(() => document.getElementById('status').innerText = "", 3000);
+                });
+            }
 
         window.saveSettings = function() {
             const code = document.getElementById('adCode').value;
