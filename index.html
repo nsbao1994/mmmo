@@ -176,8 +176,9 @@
         cardDiv.className = 'article-card';
         cardDiv.dataset.category = article.category || 'Tổng hợp';
 
-        // Tạo một ảnh minh họa tự động độc quyền dựa trên ID bài viết
-        const imageUrl = `https://picsum.photos/seed/${article.id || index}/600/350`;
+       // Tạo ảnh AI thông minh dựa trên mô tả của Gemini (hoặc tên bài viết nếu bài cũ chưa có)
+        const imagePrompt = article.image_prompt || article.title;
+        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=600&height=350&nologo=true`;
 
         cardDiv.innerHTML = `
             <div style="height: 180px; overflow: hidden; background: #e9ecef;">
@@ -199,14 +200,17 @@
 }
 
         // Render Trang chi tiết có nút Share mạng xã hội
-       function renderArticleDetail(article) {
+      // 4. Render Trang chi tiết với ảnh AI lớn ở đầu bài
+function renderArticleDetail(article) {
     document.getElementById('menu-bar').style.display = 'none';
     const container = document.getElementById('app-container');
     const date = new Date(article.timestamp).toLocaleString('vi-VN');
     const currentUrl = window.location.href;
-    const imageUrl = `https://picsum.photos/seed/${article.id}/1200/600`;
     
     document.title = `${article.title} - DIY Việt Nam`;
+
+    const imagePrompt = article.image_prompt || article.title;
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=1200&height=600&nologo=true`;
 
     let tagsHtml = '';
     if (article.hashtags && Array.isArray(article.hashtags)) {
@@ -227,8 +231,8 @@
                 <span>🕒 Cập nhật: ${date}</span>
             </div>
             
-            <!-- Ảnh minh họa lớn ở đầu bài viết chi tiết -->
-            <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px;">
+            <!-- Ảnh minh họa AI đúng chủ đề -->
+            <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
                 <img src="${imageUrl}" alt="${article.title}" style="width: 100%; height: auto; object-fit: cover;">
             </div>
 
@@ -244,6 +248,7 @@
             </div>
         </div>
     `;
+
 }
         // Hàm tìm kiếm bài viết theo từ khóa
 window.searchArticles = function(keyword) {
