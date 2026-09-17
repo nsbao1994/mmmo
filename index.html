@@ -183,7 +183,7 @@
                 });
             }
 
-            function renderHomeGrid(articles) {
+           function renderHomeGrid(articles) {
                 const container = document.getElementById('app-container');
                 if (!container) return;
                 container.innerHTML = '<div class="articles-grid" id="grid-list"></div>';
@@ -195,13 +195,17 @@
                     cardDiv.className = 'article-card';
                     cardDiv.dataset.category = article.category || 'Tổng hợp';
 
+                    // --- ƯU TIÊN ẢNH THẬT CHO TRANG CHỦ ---
                     const promptText = article.image_prompt || article.title || 'technology product';
-                    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=600&height=350&nologo=true`;
+                    const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=600&height=350&nologo=true`;
+                    
+                    // Nếu admin có nhập custom_img thì lấy ảnh đó, không thì dùng ảnh AI
+                    const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
 
                     cardDiv.innerHTML = `
                         <div style="height: 180px; overflow: hidden; background: #e9ecef;">
                             <a href="?id=${article.id}">
-                                <img src="${imageUrl}" alt="${article.title || ''}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onerror="this.src='https://picsum.photos/seed/${article.id}/600/350'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                <img src="${finalImageUrl}" alt="${article.title || ''}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onerror="this.src='https://picsum.photos/seed/${article.id}/600/350'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                             </a>
                         </div>
                         <div class="card-body">
@@ -230,7 +234,14 @@
                 if (article.title) {
                     document.title = `${article.title} - DIY Việt Nam`;
                 }
+// --- XỬ LÝ ẢNH & GIÁ THÔNG MINH ---
+                // Ưu tiên ảnh bạn nhập, nếu không có mới gọi AI vẽ
+                const promptText = article.image_prompt || article.title || 'technology product';
+                const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
+                const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
 
+                // Ưu tiên giá bạn nhập, nếu không có thì hiện "Xem trên web"
+                const finalPrice = article.custom_price ? article.custom_price : "Xem trên web";
                 const promptText = article.image_prompt || article.title || 'technology product';
                 const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
 
@@ -241,17 +252,19 @@
 
                // --- CHÈN GIAO DIỆN SHOPEE MỚI VÀO ĐÂY ---
                // --- BẢN NÂNG CẤP: TOÀN BỘ KHUNG ĐỀU CLICK ĐƯỢC ---
+               // (Nhớ cập nhật lại biến finalImageUrl cho thẻ <img> chính của bài viết nhé)
+
                 let buttonHtml = '';
                 if (article.shopee_link) {
                     buttonHtml = `
                         <a href="${article.shopee_link}" target="_blank" style="text-decoration: none; color: inherit; display: block;">
                             <div class="shopee-box">
                                 <div class="shopee-box-img">
-                                    <img src="${imageUrl}" alt="Sản phẩm" onerror="this.src='https://picsum.photos/seed/${article.id}/300/300'">
+                                    <img src="${finalImageUrl}" alt="Sản phẩm" onerror="this.src='https://picsum.photos/seed/${article.id}/300/300'">
                                 </div>
                                 <div class="shopee-box-info">
                                     <div class="shopee-box-title">🛒 ${article.title}</div>
-                                    <div class="shopee-box-price">Giá ưu đãi: <span>Xem trên web</span></div>
+                                    <div class="shopee-box-price">Giá ưu đãi: <span>${finalPrice}</span></div>
                                     <div class="shopee-box-desc">🔥 Đang có Mã Giảm Giá & Freeship Extra</div>
                                     <span class="shopee-box-btn">
                                         Đến Nơi Bán &rarr;
