@@ -3,23 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIY Việt Nam - Cẩm Nang Kỹ Thuật, Mạch Điện & Review Linh Kiện</title>
+    <title>DIY Việt Nam - Cẩm Nang Kỹ Thuật, Mạch Điện & Linh Kiện, Review Sản Phẩm</title>
     <meta name="description" content="Trang chia sẻ kiến thức kỹ thuật điện tử, hướng dẫn chế đồ DIY, năng lượng mặt trời và review linh kiện chính hãng tốt nhất.">
     <style>
         :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
         
-        /* Header phong cách hiện đại */
         header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 40px 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h1 { margin: 0 0 10px 0; font-size: 2.2em; cursor: pointer; letter-spacing: 0.5px; }
         .slogan { font-size: 1.1em; opacity: 0.9; }
 
-        /* Thanh Menu danh mục */
         .menu-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 35px; flex-wrap: wrap; }
         .menu-btn { background: white; border: 1px solid #ddd; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; color: #555; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .menu-btn:hover, .menu-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); transform: translateY(-2px); }
 
-        /* Giao diện danh sách dạng Lưới (Grid) */
         .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         .article-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, box-shadow 0.2s; }
         .article-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
@@ -32,9 +29,8 @@
         .read-more { color: var(--primary-color); text-decoration: none; font-weight: 600; font-size: 0.9em; }
         .read-more:hover { text-decoration: underline; }
 
-        /* Giao diện xem chi tiết 1 bài viết */
         .article-detail { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .article-detail h1 { color: #111; font-size: 2em; text-align: left; background: none; color: #1e3c72; padding: 0; }
+        .article-detail h1 { color: #1e3c72; font-size: 2em; text-align: left; background: none; padding: 0; }
         .content p { line-height: 1.8; color: #444; margin-bottom: 20px; font-size: 1.05em; }
         .content h2 { color: #333; margin-top: 30px; font-size: 1.4em; }
 
@@ -44,7 +40,6 @@
         .back-btn { display: inline-block; background: #e9ecef; color: #495057; padding: 8px 16px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-bottom: 20px; transition: background 0.2s; }
         .back-btn:hover { background: #dde2e6; }
 
-        /* Khu vực Share mạng xã hội */
         .share-box { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .share-title { font-weight: 600; color: #555; margin-right: 5px; }
         .share-btn { padding: 8px 14px; border-radius: 6px; color: white; text-decoration: none; font-size: 0.85em; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: opacity 0.2s; cursor: pointer; border: none; }
@@ -53,11 +48,9 @@
         .zalo-share { background: #0068ff; }
         .copy-share { background: #6c757d; }
 
-        /* Hashtag */
         .hashtags { margin-top: 20px; display: flex; gap: 6px; flex-wrap: wrap; }
         .tag { background: #f1f3f5; color: #495057; padding: 4px 10px; border-radius: 4px; font-size: 0.8em; font-weight: 500; }
 
-        /* Nút mua hàng Shopee */
         .buy-button { display: inline-block; background-color: var(--accent-color); color: white !important; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.1em; margin-top: 25px; box-shadow: 0 4px 10px rgba(238,77,45,0.3); transition: transform 0.2s, background 0.2s; }
         .buy-button:hover { background-color: #d73d22; transform: translateY(-2px); }
 
@@ -69,14 +62,9 @@
 
     <header>
         <h1 onclick="window.location.href='?'">⚡ DIY Việt Nam</h1>
-        <div class="slogan">Cẩm Nang Kỹ Thuật, Mạch Điện & Linh Kiện, Reviews Sản Phẩm</div>
+        <div class="slogan">Cẩm Nang Kỹ Thuật, Mạch Điện & Review Linh Kiện Chính Hãng</div>
     </header>
-<!-- Ô tìm kiếm bài viết -->
-<div style="text-align: center; margin-bottom: 25px;">
-    <input type="text" id="searchInput" placeholder="🔍 Tìm kiếm mạch điện, linh kiện, mẹo DIY..." 
-           oninput="searchArticles(this.value)" 
-           style="width: 100%; max-width: 500px; padding: 12px 20px; border-radius: 25px; border: 1px solid #ddd; outline: none; box-shadow: 0 2px 5px rgba(0,0,0,0.02); font-size: 0.95em;">
-</div>
+
     <div id="ads-box"></div>
 
     <div class="menu-container" id="menu-bar" style="display: none;">
@@ -95,175 +83,174 @@
             databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
 
-        let allArticlesMap = {};
+            let allArticlesMap = {};
 
-        onValue(ref(db, 'settings/ads'), (snapshot) => {
-            if (snapshot.exists()) {
-                document.getElementById('ads-box').innerHTML = snapshot.val().html_code || '';
-            }
-        });
-
-        const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'));
-        
-        onValue(articlesRef, (snapshot) => {
-            if (!snapshot.exists()) {
-                document.getElementById('app-container').innerHTML = '<p style="text-align:center;">Chưa có bài viết nào. Hãy vào trang Admin để tạo chủ đề tự động!</p>';
-                return;
-            }
-
-            allArticlesMap = {};
-            const categoriesSet = new Set();
-            const articlesList = [];
-
-            snapshot.forEach((childSnapshot) => {
-                const key = childSnapshot.key;
-                const article = childSnapshot.val();
-                article.id = key;
-                
-                allArticlesMap[key] = article;
-                articlesList.push(article);
-                if (article.category) categoriesSet.add(article.category);
-            });
-
-            articlesList.reverse();
-
-            const urlParams = new URLSearchParams(window.location.search);
-            const articleId = urlParams.get('id');
-
-            if (articleId && allArticlesMap[articleId]) {
-                renderArticleDetail(allArticlesMap[articleId]);
-            } else {
-                document.getElementById('menu-bar').style.display = 'flex';
-                renderMenu(categoriesSet);
-                renderHomeGrid(articlesList);
-            }
-        });
-
-        function renderMenu(categories) {
-            const menuBar = document.getElementById('menu-bar');
-            menuBar.innerHTML = `<button class="menu-btn active" onclick="filterCategory('All', this)">Tất cả bài viết</button>`;
-            categories.forEach(cat => {
-                menuBar.innerHTML += `<button class="menu-btn" onclick="filterCategory('${cat}', this)">${cat}</button>`;
-            });
-        }
-
-        window.filterCategory = function(category, btnElement) {
-            document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
-            btnElement.classList.add('active');
-
-            const cards = document.querySelectorAll('.article-card');
-            cards.forEach(card => {
-                if (category === 'All' || card.dataset.category === category) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
+            onValue(ref(db, 'settings/ads'), (snapshot) => {
+                if (snapshot.exists() && snapshot.val().html_code) {
+                    const adsBox = document.getElementById('ads-box');
+                    if (adsBox) adsBox.innerHTML = snapshot.val().html_code;
                 }
             });
-        }
 
-        // Render Trang chủ dạng Lưới (Grid) hiện đại
-       function renderHomeGrid(articles) {
-    const container = document.getElementById('app-container');
-    container.innerHTML = '<div class="articles-grid" id="grid-list"></div>';
-    const gridList = document.getElementById('grid-list');
-
-    articles.forEach((article, index) => {
-        const date = new Date(article.timestamp).toLocaleDateString('vi-VN');
-        const cardDiv = document.createElement('div');
-        cardDiv.className = 'article-card';
-        cardDiv.dataset.category = article.category || 'Tổng hợp';
-
-       // Tạo ảnh AI thông minh dựa trên mô tả của Gemini (hoặc tên bài viết nếu bài cũ chưa có)
-        const imagePrompt = article.image_prompt || article.title;
-        const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=600&height=350&nologo=true`;
-
-        cardDiv.innerHTML = `
-            <div style="height: 180px; overflow: hidden; background: #e9ecef;">
-                <a href="?id=${article.id}">
-                    <img src="${imageUrl}" alt="${article.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                </a>
-            </div>
-            <div class="card-body">
-                <span class="badge">${article.category || 'Tổng hợp'}</span>
-                <h2><a href="?id=${article.id}">${article.title || 'Bài viết kỹ thuật'}</a></h2>
-            </div>
-            <div class="card-footer">
-                <span style="font-size: 0.85em; color: #888;">🕒 ${date}</span>
-                <a href="?id=${article.id}" class="read-more">Đọc tiếp &rarr;</a>
-            </div>
-        `;
-        gridList.appendChild(cardDiv);
-    });
-}
-
-        // Render Trang chi tiết có nút Share mạng xã hội
-      // 4. Render Trang chi tiết với ảnh AI lớn ở đầu bài
-function renderArticleDetail(article) {
-    document.getElementById('menu-bar').style.display = 'none';
-    const container = document.getElementById('app-container');
-    const date = new Date(article.timestamp).toLocaleString('vi-VN');
-    const currentUrl = window.location.href;
-    
-    document.title = `${article.title} - DIY Việt Nam`;
-
-    const imagePrompt = article.image_prompt || article.title;
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(imagePrompt)}?width=1200&height=600&nologo=true`;
-
-    let tagsHtml = '';
-    if (article.hashtags && Array.isArray(article.hashtags)) {
-        tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
-    }
-
-    let buttonHtml = '';
-    if (article.shopee_link) {
-        buttonHtml = `<div><a href="${article.shopee_link}" target="_blank" class="buy-button">🛒 Mua Sản Phẩm / Xem Giá Ưu Đãi trên Shopee</a></div>`;
-    }
-
-    container.innerHTML = `
-        <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
-        <div class="article-detail">
-            <h1>${article.title}</h1>
-            <div class="meta">
-                <span class="badge">${article.category || 'Tổng hợp'}</span>
-                <span>🕒 Cập nhật: ${date}</span>
-            </div>
+            const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'));
             
-            <!-- Ảnh minh họa AI đúng chủ đề -->
-            <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
-                <img src="${imageUrl}" alt="${article.title}" style="width: 100%; height: auto; object-fit: cover;">
-            </div>
+            onValue(articlesRef, (snapshot) => {
+                const container = document.getElementById('app-container');
+                if (!container) return;
 
-            <div class="content">${article.content || ''}</div>
-            ${buttonHtml}
-            ${tagsHtml}
-            
-            <div class="share-box">
-                <span class="share-title">📢 Chia sẻ bài viết:</span>
-                <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
-                <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
-                <button onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
-            </div>
-        </div>
-    `;
+                if (!snapshot.exists()) {
+                    container.innerHTML = '<p style="text-align:center;">Chưa có bài viết nào. Hãy vào trang Admin để tạo chủ đề tự động!</p>';
+                    return;
+                }
 
-}
-        // Hàm tìm kiếm bài viết theo từ khóa
-window.searchArticles = function(keyword) {
-    const cards = document.querySelectorAll('.article-card');
-    const query = keyword.toLowerCase().trim();
+                allArticlesMap = {};
+                const categoriesSet = new Set();
+                const articlesList = [];
 
-    cards.forEach(card => {
-        const title = card.querySelector('h2').innerText.toLowerCase();
-        if (title.includes(query)) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
+                snapshot.forEach((childSnapshot) => {
+                    const key = childSnapshot.key;
+                    const article = childSnapshot.val() || {};
+                    article.id = key;
+                    
+                    allArticlesMap[key] = article;
+                    articlesList.push(article);
+                    if (article.category) categoriesSet.add(article.category);
+                });
+
+                articlesList.reverse();
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const articleId = urlParams.get('id');
+
+                if (articleId && allArticlesMap[articleId]) {
+                    renderArticleDetail(allArticlesMap[articleId]);
+                } else {
+                    const menuBar = document.getElementById('menu-bar');
+                    if (menuBar) menuBar.style.display = 'flex';
+                    renderMenu(categoriesSet);
+                    renderHomeGrid(articlesList);
+                }
+            });
+
+            function renderMenu(categories) {
+                const menuBar = document.getElementById('menu-bar');
+                if (!menuBar) return;
+                let html = `<button class="menu-btn active" onclick="filterCategory('All', this)">Tất cả bài viết</button>`;
+                categories.forEach(cat => {
+                    html += `<button class="menu-btn" onclick="filterCategory('${cat}', this)">${cat}</button>`;
+                });
+                menuBar.innerHTML = html;
+            }
+
+            window.filterCategory = function(category, btnElement) {
+                document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
+                if (btnElement) btnElement.classList.add('active');
+
+                const cards = document.querySelectorAll('.article-card');
+                cards.forEach(card => {
+                    if (category === 'All' || card.dataset.category === category) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+
+            function renderHomeGrid(articles) {
+                const container = document.getElementById('app-container');
+                if (!container) return;
+                container.innerHTML = '<div class="articles-grid" id="grid-list"></div>';
+                const gridList = document.getElementById('grid-list');
+
+                articles.forEach((article) => {
+                    const date = article.timestamp ? new Date(article.timestamp).toLocaleDateString('vi-VN') : 'Mới cập nhật';
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'article-card';
+                    cardDiv.dataset.category = article.category || 'Tổng hợp';
+
+                    const promptText = article.image_prompt || article.title || 'technology product';
+                    const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=600&height=350&nologo=true`;
+
+                    cardDiv.innerHTML = `
+                        <div style="height: 180px; overflow: hidden; background: #e9ecef;">
+                            <a href="?id=${article.id}">
+                                <img src="${imageUrl}" alt="${article.title || ''}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onerror="this.src='https://picsum.photos/seed/${article.id}/600/350'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <span class="badge">${article.category || 'Tổng hợp'}</span>
+                            <h2><a href="?id=${article.id}">${article.title || 'Bài viết kỹ thuật'}</a></h2>
+                        </div>
+                        <div class="card-footer">
+                            <span style="font-size: 0.85em; color: #888;">🕒 ${date}</span>
+                            <a href="?id=${article.id}" class="read-more">Đọc tiếp &rarr;</a>
+                        </div>
+                    `;
+                    gridList.appendChild(cardDiv);
+                });
+            }
+
+            function renderArticleDetail(article) {
+                const menuBar = document.getElementById('menu-bar');
+                if (menuBar) menuBar.style.display = 'none';
+                
+                const container = document.getElementById('app-container');
+                if (!container) return;
+
+                const date = article.timestamp ? new Date(article.timestamp).toLocaleString('vi-VN') : 'Mới cập nhật';
+                const currentUrl = window.location.href;
+                
+                if (article.title) {
+                    document.title = `${article.title} - DIY Việt Nam`;
+                }
+
+                const promptText = article.image_prompt || article.title || 'technology product';
+                const imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
+
+                let tagsHtml = '';
+                if (article.hashtags && Array.isArray(article.hashtags)) {
+                    tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
+                }
+
+                let buttonHtml = '';
+                if (article.shopee_link) {
+                    buttonHtml = `<div><a href="${article.shopee_link}" target="_blank" class="buy-button">🛒 Mua Sản Phẩm / Xem Giá Ưu Đãi trên Shopee</a></div>`;
+                }
+
+                container.innerHTML = `
+                    <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
+                    <div class="article-detail">
+                        <h1>${article.title || 'Bài viết'}</h1>
+                        <div class="meta">
+                            <span class="badge">${article.category || 'Tổng hợp'}</span>
+                            <span>🕒 Cập nhật: ${date}</span>
+                        </div>
+                        
+                        <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
+                            <img src="${imageUrl}" alt="${article.title || ''}" style="width: 100%; height: auto; object-fit: cover;" onerror="this.src='https://picsum.photos/seed/${article.id}/1200/600'">
+                        </div>
+
+                        <div class="content">${article.content || ''}</div>
+                        ${buttonHtml}
+                        ${tagsHtml}
+                        
+                        <div class="share-box">
+                            <span class="share-title">📢 Chia sẻ bài viết:</span>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
+                            <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(currentUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+        } catch (e) {
+            console.error("Init Error:", e);
         }
-    });
-}
     </script>
 </body>
 </html>
