@@ -36,21 +36,13 @@ class handler(BaseHTTPRequestHandler):
             gemini_api_key = os.environ.get('GEMINI_API_KEY')
             client = genai.Client(api_key=gemini_api_key)
 
-            # Prompt tinh gọn, tập trung vào nội dung chuyên môn, không bắt AI lo chuyện gắn link nữa
-           prompt = f"""
+            prompt = f"""
             Đóng vai một chuyên gia review sản phẩm và viết bài hướng dẫn kỹ thuật hoặc đánh giá chuyên sâu về chủ đề: "{keyword}".
             Yêu cầu đầu ra bắt buộc phải là một đối tượng JSON thuần túy (không chứa markdown như ```json hoặc ```), có đúng các trường sau:
             - "title": Tiêu đề bài viết hấp dẫn, chuẩn SEO (string)
-            - "category": Chọn 1 trong các danh mục sau cho phù hợp nhất: 
-              "Linh kiện điện tử", 
-              "Đồ điện tử", 
-              "Đồ gia dụng", 
-              "Bàn ghế & Nội thất", 
-              "Thiết bị làm mát & Quạt", 
-              "Năng lượng mặt trời", 
-              "Mẹo DIY" (string)
+            - "category": Chọn 1 trong các danh mục sau cho phù hợp nhất: "Linh kiện điện tử", "Đồ điện tử", "Đồ gia dụng", "Bàn ghế & Nội thất", "Thiết bị làm mát & Quạt", "Năng lượng mặt trời", "Mẹo DIY" (string)
             - "hashtags": Danh sách 4-5 thẻ hashtag liên quan (mảng string, ví dụ: ["#dodientu", "#dogiadung", "#review"])
-        - "image_prompt": Một đoạn mô tả ngắn gọn bằng tiếng Anh để tạo hình ảnh AI minh họa cho sản phẩm/chủ đề này (ví dụ: "product photography of a modern electric fan on a table, clean studio lighting" hoặc "electronic circuit board close up") (string)
+            - "image_prompt": Một đoạn mô tả ngắn gọn bằng tiếng Anh để tạo hình ảnh AI minh họa cho sản phẩm/chủ đề này (ví dụ: "product photography of a modern electric fan on a table, clean studio lighting" hoặc "electronic circuit board close up") (string)
             - "content": Nội dung bài viết chi tiết định dạng HTML, chỉ dùng các thẻ <h2>, <p>, <ul>, <li> để trình bày bài viết (tuyệt đối không tự chèn thẻ a hay link Shopee vào trong nội dung) (string)
             """
 
@@ -79,14 +71,15 @@ class handler(BaseHTTPRequestHandler):
 
             article_json = json.loads(response_text)
 
-            # Đẩy bài viết lên Firebase kèm theo link shopee chính xác từ Admin
+            # Đẩy bài viết lên Firebase (đã bổ sung image_prompt)
             articles_ref = db.reference('articles')
             new_article = {
                 'title': article_json.get('title'),
                 'category': article_json.get('category'),
                 'hashtags': article_json.get('hashtags'),
+                'image_prompt': article_json.get('image_prompt'),
                 'content': article_json.get('content'),
-                'shopee_link': shopee_link, # Lưu thẳng link chuẩn do bạn nhập vào đây
+                'shopee_link': shopee_link,
                 'timestamp': int(time.time() * 1000)
             }
             articles_ref.push(new_article)
