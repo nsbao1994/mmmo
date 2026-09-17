@@ -17,21 +17,23 @@
     <p id="status"></p>
 
     <div class="box">
-        <h3>1. Thêm chủ đề và Link Shopee Affiliate</h3>
-        <label>Chủ đề / Tên sản phẩm:</label>
-        <input type="text" id="topicInput" placeholder="VD: Mạch hạ áp LM2596">
-        
-        <label>Link Affiliate Shopee:</label>
-        <input type="text" id="shopeeLinkInput" placeholder="VD: https://shope.ee/Mã_của_bạn hoặc link sản phẩm">
-        
-        <button onclick="addTopic()">Thêm vào hàng đợi</button>
-    </div>
+            <h3>1. Thêm chủ đề và Link Shopee Affiliate</h3>
+            <label>Chủ đề / Tên sản phẩm:</label>
+            <input type="text" id="topicInput" placeholder="VD: Mạch hạ áp LM2596 (Bắt buộc)">
+            
+            <label>Link Affiliate Shopee:</label>
+            <input type="text" id="shopeeLinkInput" placeholder="VD: https://shope.ee/Mã_của_bạn (Bắt buộc)">
+            
+            <label>Link Ảnh sản phẩm thật (Click chuột phải vào ảnh Shopee -> Sao chép địa chỉ hình ảnh):</label>
+            <input type="text" id="imgInput" placeholder="VD: https://down-vn.img.susercontent.com/file/... (Không bắt buộc)">
+            
+            <label>Giá sản phẩm thật:</label>
+            <input type="text" id="priceInput" placeholder="VD: 155.000đ (Không bắt buộc)">
+            
+            <button onclick="addTopic()">Thêm vào hàng đợi</button>
+        </div>
 
-    <div class="box">
-        <h3>2. Cài đặt mã Quảng cáo (Ads)</h3>
-        <textarea id="adCode" rows="4" placeholder="Dán mã quảng cáo vào đây..."></textarea>
-        <button onclick="saveSettings()">Lưu cấu hình Ads</button>
-    </div>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
