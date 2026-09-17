@@ -50,6 +50,7 @@ class handler(BaseHTTPRequestHandler):
               "Năng lượng mặt trời", 
               "Mẹo DIY" (string)
             - "hashtags": Danh sách 4-5 thẻ hashtag liên quan (mảng string, ví dụ: ["#dodientu", "#dogiadung", "#review"])
+        - "image_prompt": Một đoạn mô tả ngắn gọn bằng tiếng Anh để tạo hình ảnh AI minh họa cho sản phẩm/chủ đề này (ví dụ: "product photography of a modern electric fan on a table, clean studio lighting" hoặc "electronic circuit board close up") (string)
             - "content": Nội dung bài viết chi tiết định dạng HTML, chỉ dùng các thẻ <h2>, <p>, <ul>, <li> để trình bày bài viết (tuyệt đối không tự chèn thẻ a hay link Shopee vào trong nội dung) (string)
             """
 
