@@ -37,7 +37,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
         const firebaseConfig = {
             databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -68,6 +68,18 @@
                     setTimeout(() => document.getElementById('status').innerText = "", 3000);
                 });
             }
+        // HÀM XÓA SẠCH HÀNG ĐỢI
+            window.clearQueue = function() {
+                // Bật thông báo hỏi lại cho chắc chắn, tránh bấm nhầm
+                if (confirm("⚠️ Bạn có chắc chắn muốn xóa SẠCH toàn bộ hàng đợi không? Hành động này không thể khôi phục!")) {
+                    remove(ref(db, 'queue')).then(() => {
+                        alert("✅ Đã xóa sạch toàn bộ hàng đợi!");
+                    }).catch((error) => {
+                        console.error("Lỗi khi xóa:", error);
+                        alert("❌ Có lỗi xảy ra, không thể xóa hàng đợi!");
+                    });
+                }
+            }
 
         window.saveSettings = function() {
             const code = document.getElementById('adCode').value;
@@ -76,6 +88,7 @@
                 setTimeout(() => document.getElementById('status').innerText = "", 3000);
             });
         }
+        <button onclick="clearQueue()" style="background-color: #dc3545; margin-top: 15px;">🗑️ Xóa toàn bộ hàng đợi</button>
     </script>
 </body>
 </html>
