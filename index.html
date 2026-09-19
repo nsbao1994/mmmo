@@ -63,7 +63,11 @@
         .shopee-box-desc { color: #26aa99; font-size: 0.85em; font-weight: bold; margin-bottom: 15px; }
         .shopee-box-btn { display: inline-block; background: #ee4d2d; color: white !important; padding: 10px 24px; border-radius: 4px; font-weight: bold; text-decoration: none; transition: 0.2s; text-align: center; }
         .shopee-box-btn:hover { background: #d73d22; }
-        
+        /* CSS cho nút Phân trang */
+        .pagination-container { text-align: center; margin-top: 40px; padding-bottom: 30px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .pag-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 6px; font-weight: 600; color: #555; transition: all 0.2s; }
+        .pag-btn:hover { background: #f0f0f0; }
+        .pag-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,102,204,0.3); }
         @media (max-width: 600px) { 
             .shopee-box { flex-direction: column; text-align: center; gap: 15px; padding: 20px 15px; } 
             .shopee-box-img { width: 100%; height: 200px; } 
@@ -104,7 +108,14 @@
             const db = getDatabase(app);
 
             let allArticlesMap = {};
+            
+            // --- CÁC BIẾN DÙNG CHO PHÂN TRANG ---
+            let globalArticlesList = [];
+            let currentCategory = 'All';
+            let currentPage = 1;
+            const itemsPerPage = 12; // Hiển thị 12 bài viết mỗi trang (có thể đổi)
 
+            // Tải quảng cáo
             onValue(ref(db, 'settings/ads'), (snapshot) => {
                 if (snapshot.exists() && snapshot.val().html_code) {
                     const adsBox = document.getElementById('ads-box');
@@ -112,6 +123,7 @@
                 }
             });
 
+            // Tải danh sách bài viết
             const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'));
             
             onValue(articlesRef, (snapshot) => {
@@ -137,20 +149,43 @@
                     if (article.category) categoriesSet.add(article.category);
                 });
 
+                // Bài mới nhất lên đầu
                 articlesList.reverse();
+                globalArticlesList = articlesList; 
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const articleId = urlParams.get('id');
 
+                // Nếu đang mở 1 bài cụ thể
                 if (articleId && allArticlesMap[articleId]) {
                     renderArticleDetail(allArticlesMap[articleId]);
                 } else {
+                    // Đang ở trang chủ -> Khởi chạy Menu và Phân trang
                     const menuBar = document.getElementById('menu-bar');
                     if (menuBar) menuBar.style.display = 'flex';
                     renderMenu(categoriesSet);
-                    renderHomeGrid(articlesList);
+                    renderFilteredAndPaginated(); 
                 }
             });
+
+            // HÀM CHIA TRANG & LỌC CHUYÊN MỤC
+            function renderFilteredAndPaginated() {
+                // 1. Lọc theo chuyên mục
+                let filtered = globalArticlesList;
+                if (currentCategory !== 'All') {
+                    filtered = globalArticlesList.filter(a => (a.category || 'Tổng hợp') === currentCategory);
+                }
+
+                // 2. Tính toán phân trang
+                const totalPages = Math.ceil(filtered.length / itemsPerPage);
+                if (currentPage > totalPages) currentPage = totalPages || 1;
+
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage);
+
+                // 3. Hiển thị lưới bài viết và Nút phân trang
+                renderHomeGrid(paginatedItems, totalPages, currentPage);
+            }
 
             function renderMenu(categories) {
                 const menuBar = document.getElementById('menu-bar');
@@ -162,56 +197,92 @@
                 menuBar.innerHTML = html;
             }
 
+            // KHI BẤM NÚT MENU CHUYÊN MỤC
             window.filterCategory = function(category, btnElement) {
                 document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
                 if (btnElement) btnElement.classList.add('active');
 
-                const cards = document.querySelectorAll('.article-card');
-                cards.forEach(card => {
-                    if (category === 'All' || card.dataset.category === category) {
-                        card.style.display = 'flex';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+                currentCategory = category;
+                currentPage = 1; // Chọn chuyên mục mới thì reset về trang 1
+                renderFilteredAndPaginated();
             }
 
-            function renderHomeGrid(articles) {
+            // KHI BẤM NÚT CHUYỂN TRANG
+            window.changePage = function(page) {
+                currentPage = page;
+                renderFilteredAndPaginated();
+                // Cuộn mượt mà lên đầu trang lưới bài viết
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function renderHomeGrid(articles, totalPages = 1, currentPage = 1) {
                 const container = document.getElementById('app-container');
                 if (!container) return;
-                container.innerHTML = '<div class="articles-grid" id="grid-list"></div>';
+                
+                // Chuẩn bị khung chứa lưới bài và khung chứa nút phân trang
+                container.innerHTML = `
+                    <div class="articles-grid" id="grid-list"></div>
+                    <div class="pagination-container" id="pagination-box"></div>
+                `;
                 const gridList = document.getElementById('grid-list');
+                const pagBox = document.getElementById('pagination-box');
 
-                articles.forEach((article) => {
-                    const date = article.timestamp ? new Date(article.timestamp).toLocaleDateString('vi-VN') : 'Mới cập nhật';
-                    const cardDiv = document.createElement('div');
-                    cardDiv.className = 'article-card';
-                    cardDiv.dataset.category = article.category || 'Tổng hợp';
+                if (articles.length === 0) {
+                     gridList.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">Chưa có bài viết nào trong danh mục này.</p>';
+                } else {
+                    articles.forEach((article) => {
+                        const date = article.timestamp ? new Date(article.timestamp).toLocaleDateString('vi-VN') : 'Mới cập nhật';
+                        const cardDiv = document.createElement('div');
+                        cardDiv.className = 'article-card';
+                        
+                        const promptText = article.image_prompt || article.title || 'technology product';
+                        const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=600&height=350&nologo=true`;
+                        const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
 
-                    // Xử lý ảnh cho trang chủ
-                    const promptText = article.image_prompt || article.title || 'technology product';
-                    const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=600&height=350&nologo=true`;
-                    const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
+                        cardDiv.innerHTML = `
+                            <div style="height: 180px; overflow: hidden; background: #e9ecef;">
+                                <a href="?id=${article.id}">
+                                    <img src="${finalImageUrl}" alt="${article.title || ''}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onerror="this.src='https://picsum.photos/seed/${article.id}/600/350'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <span class="badge">${article.category || 'Tổng hợp'}</span>
+                                <h2><a href="?id=${article.id}">${article.title || 'Bài viết kỹ thuật'}</a></h2>
+                            </div>
+                            <div class="card-footer">
+                                <span style="font-size: 0.85em; color: #888;">🕒 ${date}</span>
+                                <a href="?id=${article.id}" class="read-more">Đọc tiếp &rarr;</a>
+                            </div>
+                        `;
+                        gridList.appendChild(cardDiv);
+                    });
+                }
 
-                    cardDiv.innerHTML = `
-                        <div style="height: 180px; overflow: hidden; background: #e9ecef;">
-                            <a href="?id=${article.id}">
-                                <img src="${finalImageUrl}" alt="${article.title || ''}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onerror="this.src='https://picsum.photos/seed/${article.id}/600/350'" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                            </a>
-                        </div>
-                        <div class="card-body">
-                            <span class="badge">${article.category || 'Tổng hợp'}</span>
-                            <h2><a href="?id=${article.id}">${article.title || 'Bài viết kỹ thuật'}</a></h2>
-                        </div>
-                        <div class="card-footer">
-                            <span style="font-size: 0.85em; color: #888;">🕒 ${date}</span>
-                            <a href="?id=${article.id}" class="read-more">Đọc tiếp &rarr;</a>
-                        </div>
-                    `;
-                    gridList.appendChild(cardDiv);
-                });
+                // Xây dựng nút bấm Phân trang
+                if (totalPages > 1) {
+                    let pagHtml = '';
+                    
+                    if (currentPage > 1) {
+                        pagHtml += `<button class="pag-btn" onclick="changePage(${currentPage - 1})">« Trước</button>`;
+                    }
+                    
+                    for (let i = 1; i <= totalPages; i++) {
+                        if (i === currentPage) {
+                            pagHtml += `<button class="pag-btn active">${i}</button>`;
+                        } else {
+                            pagHtml += `<button class="pag-btn" onclick="changePage(${i})">${i}</button>`;
+                        }
+                    }
+                    
+                    if (currentPage < totalPages) {
+                        pagHtml += `<button class="pag-btn" onclick="changePage(${currentPage + 1})">Sau »</button>`;
+                    }
+                    
+                    pagBox.innerHTML = pagHtml;
+                }
             }
 
+            // HÀM RENDER TRANG CHI TIẾT CÓ 3 KHUNG SHOPEE (Gắn sẵn mọi Fix)
             function renderArticleDetail(article) {
                 const menuBar = document.getElementById('menu-bar');
                 if (menuBar) menuBar.style.display = 'none';
@@ -220,28 +291,22 @@
                 if (!container) return;
 
                 const date = article.timestamp ? new Date(article.timestamp).toLocaleString('vi-VN') : 'Mới cập nhật';
-                
-                // Link chia sẻ Facebook (Đã Fix chuẩn)
                 const shareUrl = window.location.origin + '/api/share?id=' + article.id;
                 
-                if (article.title) {
-                    document.title = `${article.title} - DIY Việt Nam`;
-                }
+                if (article.title) { document.title = `${article.title} - DIY Việt Nam`; }
 
-                // Xử lý ảnh và giá 
                 const promptText = article.image_prompt || article.title || 'technology product';
                 const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
                 
                 const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
                 const finalPrice = article.custom_price ? article.custom_price : "Xem trên web";
-// THÊM DÒNG NÀY: Ưu tiên Tên Sản Phẩm bạn nhập. Nếu không nhập, lấy Tên bài viết làm dự phòng
                 const finalProductName = article.product_name ? article.product_name : article.title;
+
                 let tagsHtml = '';
                 if (article.hashtags && Array.isArray(article.hashtags)) {
                     tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
                 }
 
-                // 1. TẠO GIAO DIỆN KHUNG SHOPEE MẪU
                 let buttonHtml = '';
                 if (article.shopee_link) {
                     buttonHtml = `
@@ -263,29 +328,18 @@
                     `;
                 }
 
-                // 2. THUẬT TOÁN TỰ ĐỘNG CHÈN KHUNG VÀO GIỮA BÀI VIẾT
                 let finalContentHtml = article.content || '';
                 
                 if (article.shopee_link && finalContentHtml) {
-                    // Cắt bài viết ra thành từng đoạn văn (dựa vào thẻ </p>)
                     const pTags = finalContentHtml.split('</p>');
-                    
-                    // Chỉ chèn vào giữa nếu bài viết đủ dài (có lớn hơn 3 đoạn văn)
-                    // (Tránh trường hợp bài quá ngắn, 3 khung dính cục vào nhau)
                     if (pTags.length > 3) {
-                        const middleIndex = Math.floor(pTags.length / 2); // Tìm điểm chính giữa
-                        
-                        // Nối nửa đầu bài viết
+                        const middleIndex = Math.floor(pTags.length / 2); 
                         const firstHalf = pTags.slice(0, middleIndex).join('</p>') + '</p>';
-                        // Nối nửa sau bài viết
                         const secondHalf = pTags.slice(middleIndex).join('</p>');
-                        
-                        // Kẹp cái khung Shopee vào giữa 2 nửa bài viết
                         finalContentHtml = firstHalf + buttonHtml + secondHalf;
                     }
                 }
 
-                // 3. HIỂN THỊ RA GIAO DIỆN (CÓ 3 VỊ TRÍ)
                 container.innerHTML = `
                     <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
                     <div class="article-detail">
@@ -295,32 +349,22 @@
                             <span>🕒 Cập nhật: ${date}</span>
                         </div>
                         
-                        <!-- ẢNH BÌA BÀI VIẾT -->
                         <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
                             <img src="${finalImageUrl}" alt="${article.title || ''}" style="width: 100%; height: auto; object-fit: cover;" onerror="this.src='https://picsum.photos/seed/${article.id}/1200/600'">
                         </div>
 
-                        <!-- VỊ TRÍ 1: KHUNG SHOPEE Ở ĐẦU (Dưới ảnh bìa) -->
                         ${buttonHtml}
 
-                        <!-- VỊ TRÍ 2: NỘI DUNG BÀI VIẾT (Đã tự động có thêm khung thứ 2 ở giữa) -->
                         <div class="content">${finalContentHtml}</div>
                         
-                        <!-- VỊ TRÍ 3: KHUNG SHOPEE Ở CUỐI (Dưới bài viết) -->
                         ${buttonHtml}
 
                         ${tagsHtml}
                         
-                       <div class="share-box">
+                        <div class="share-box">
                             <span class="share-title">📢 Chia sẻ bài viết:</span>
-                            
-                            <!-- Nút Share Facebook (Chuẩn) -->
                             <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
-                            
-                            <!-- Nút Share Zalo (Chuẩn) -->
                             <a href="https://zalo.me/share?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn zalo-share">Zalo</a>
-                            
-                            <!-- Nút Copy Link -->
                             <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
                         </div>
                     </div>
