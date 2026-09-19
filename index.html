@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FT8W79F277"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-FT8W79F277');
-</script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FT8W79F277"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FT8W79F277');
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIY Việt Nam - Cẩm Nang Kỹ Thuật, Mạch Điện & Linh Kiện, Review Sản Phẩm</title>
-    <meta name="description" content="Trang chia sẻ kiến thức kỹ thuật điện tử, hướng dẫn chế đồ DIY, năng lượng mặt trời và review linh kiện chính hãng tốt nhất.">
+    
+    <!-- 🌟 BỔ SUNG: Favicon (Logo nhỏ trên tab trình duyệt) -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" type="image/png">
+    
+    <meta name="description" id="meta-desc" content="Trang chia sẻ kiến thức kỹ thuật điện tử, hướng dẫn chế đồ DIY, năng lượng mặt trời và review linh kiện chính hãng tốt nhất.">
+    
     <style>
-        /* Nút Cuộn lên đầu trang */
-        #backToTopBtn {
-            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 99;
-            font-size: 22px; border: none; outline: none; background-color: var(--accent-color);
-            color: white; cursor: pointer; padding: 12px 16px; border-radius: 50%;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s;
-        }
-        #backToTopBtn:hover { background-color: #d73d22; transform: translateY(-4px); }
         :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
         
@@ -68,7 +65,7 @@
         .hashtags { margin-top: 20px; display: flex; gap: 6px; flex-wrap: wrap; }
         .tag { background: #f1f3f5; color: #495057; padding: 4px 10px; border-radius: 4px; font-size: 0.8em; font-weight: 500; }
 
-        /* Giao diện khung Shopee */
+        /* Khung Shopee */
         .shopee-box { display: flex; align-items: center; background: #fff; border: 2px dashed #ee4d2d; border-radius: 8px; padding: 15px; margin-top: 30px; margin-bottom: 20px; gap: 20px; box-shadow: 0 4px 10px rgba(238,77,45,0.08); transition: transform 0.2s; }
         .shopee-box:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(238,77,45,0.15); }
         .shopee-box-img { width: 130px; height: 130px; flex-shrink: 0; border-radius: 6px; overflow: hidden; border: 1px solid #eee; }
@@ -80,11 +77,25 @@
         .shopee-box-desc { color: #26aa99; font-size: 0.85em; font-weight: bold; margin-bottom: 15px; }
         .shopee-box-btn { display: inline-block; background: #ee4d2d; color: white !important; padding: 10px 24px; border-radius: 4px; font-weight: bold; text-decoration: none; transition: 0.2s; text-align: center; }
         .shopee-box-btn:hover { background: #d73d22; }
-        /* CSS cho nút Phân trang */
+        
+        /* Phân trang */
         .pagination-container { text-align: center; margin-top: 40px; padding-bottom: 30px; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
         .pag-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 6px; font-weight: 600; color: #555; transition: all 0.2s; }
         .pag-btn:hover { background: #f0f0f0; }
         .pag-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,102,204,0.3); }
+        
+        /* Nút Lên đầu trang */
+        #backToTopBtn {
+            display: none; position: fixed; bottom: 30px; right: 30px; z-index: 99;
+            font-size: 22px; border: none; outline: none; background-color: var(--accent-color);
+            color: white; cursor: pointer; padding: 12px 16px; border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s;
+        }
+        #backToTopBtn:hover { background-color: #d73d22; transform: translateY(-4px); }
+
+        /* 🌟 BỔ SUNG: Giao diện Chân trang */
+        footer { text-align: center; padding: 30px 20px; border-top: 1px solid #ddd; margin-top: 50px; color: #666; font-size: 0.9em; line-height: 1.6; }
+
         @media (max-width: 600px) { 
             .shopee-box { flex-direction: column; text-align: center; gap: 15px; padding: 20px 15px; } 
             .shopee-box-img { width: 100%; height: 200px; } 
@@ -105,26 +116,33 @@
     <div id="ads-box"></div>
 
     <div class="menu-container" id="menu-bar" style="display: none;">
-        <button class="menu-btn active" onclick="filterCategory('All', this)">Tất cả bài viết</button>
+        <!-- Nút menu sẽ được bơm vào đây -->
     </div>
     
     <div id="app-container">
         <p class="loading">⏳ Đang tải dữ liệu hệ thống...</p>
     </div>
-<!-- Nút Cuộn lên đầu trang -->
+
+    <!-- 🌟 BỔ SUNG: Footer Tuyên bố Affiliate -->
+    <footer>
+        <p><strong>&copy; 2026 DIY Việt Nam. Mọi quyền được bảo lưu.</strong></p>
+        <p><em>*Tuyên bố miễn trừ trách nhiệm: Trang web có thể nhận được một khoản hoa hồng nhỏ khi bạn mua hàng qua các đường link giới thiệu Shopee. Điều này giúp duy trì hoạt động của trang web nhưng hoàn toàn không làm tăng giá sản phẩm mà bạn mua.</em></p>
+    </footer>
+
+    <!-- Nút Lên đầu trang -->
     <button id="backToTopBtn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" title="Lên đầu trang">🚀</button>
-    
+
     <script>
-        // Kiểm tra mỗi khi khách hàng cuộn chuột
         window.onscroll = function() {
             let btn = document.getElementById("backToTopBtn");
             if (document.body.scrollTop > 400 || document.documentElement.scrollTop > 400) {
-                btn.style.display = "block"; // Cuộn xuống 400px thì hiện nút
+                btn.style.display = "block"; 
             } else {
-                btn.style.display = "none";  // Lên trên cùng thì giấu đi
+                btn.style.display = "none";  
             }
         };
     </script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
         import { getDatabase, ref, onValue, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
@@ -138,14 +156,11 @@
             const db = getDatabase(app);
 
             let allArticlesMap = {};
-            
-            // --- CÁC BIẾN DÙNG CHO PHÂN TRANG ---
             let globalArticlesList = [];
             let currentCategory = 'All';
             let currentPage = 1;
-            const itemsPerPage = 12; // Hiển thị 12 bài viết mỗi trang (có thể đổi)
+            const itemsPerPage = 12;
 
-            // Tải quảng cáo
             onValue(ref(db, 'settings/ads'), (snapshot) => {
                 if (snapshot.exists() && snapshot.val().html_code) {
                     const adsBox = document.getElementById('ads-box');
@@ -153,7 +168,6 @@
                 }
             });
 
-            // Tải danh sách bài viết
             const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'));
             
             onValue(articlesRef, (snapshot) => {
@@ -179,18 +193,15 @@
                     if (article.category) categoriesSet.add(article.category);
                 });
 
-                // Bài mới nhất lên đầu
                 articlesList.reverse();
                 globalArticlesList = articlesList; 
 
                 const urlParams = new URLSearchParams(window.location.search);
                 const articleId = urlParams.get('id');
 
-                // Nếu đang mở 1 bài cụ thể
                 if (articleId && allArticlesMap[articleId]) {
                     renderArticleDetail(allArticlesMap[articleId]);
                 } else {
-                    // Đang ở trang chủ -> Khởi chạy Menu và Phân trang
                     const menuBar = document.getElementById('menu-bar');
                     if (menuBar) menuBar.style.display = 'flex';
                     renderMenu(categoriesSet);
@@ -198,22 +209,18 @@
                 }
             });
 
-            // HÀM CHIA TRANG & LỌC CHUYÊN MỤC
             function renderFilteredAndPaginated() {
-                // 1. Lọc theo chuyên mục
                 let filtered = globalArticlesList;
                 if (currentCategory !== 'All') {
                     filtered = globalArticlesList.filter(a => (a.category || 'Tổng hợp') === currentCategory);
                 }
 
-                // 2. Tính toán phân trang
                 const totalPages = Math.ceil(filtered.length / itemsPerPage);
                 if (currentPage > totalPages) currentPage = totalPages || 1;
 
                 const startIndex = (currentPage - 1) * itemsPerPage;
                 const paginatedItems = filtered.slice(startIndex, startIndex + itemsPerPage);
 
-                // 3. Hiển thị lưới bài viết và Nút phân trang
                 renderHomeGrid(paginatedItems, totalPages, currentPage);
             }
 
@@ -227,21 +234,17 @@
                 menuBar.innerHTML = html;
             }
 
-            // KHI BẤM NÚT MENU CHUYÊN MỤC
             window.filterCategory = function(category, btnElement) {
                 document.querySelectorAll('.menu-btn').forEach(b => b.classList.remove('active'));
                 if (btnElement) btnElement.classList.add('active');
-
                 currentCategory = category;
-                currentPage = 1; // Chọn chuyên mục mới thì reset về trang 1
+                currentPage = 1; 
                 renderFilteredAndPaginated();
             }
 
-            // KHI BẤM NÚT CHUYỂN TRANG
             window.changePage = function(page) {
                 currentPage = page;
                 renderFilteredAndPaginated();
-                // Cuộn mượt mà lên đầu trang lưới bài viết
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
@@ -249,7 +252,6 @@
                 const container = document.getElementById('app-container');
                 if (!container) return;
                 
-                // Chuẩn bị khung chứa lưới bài và khung chứa nút phân trang
                 container.innerHTML = `
                     <div class="articles-grid" id="grid-list"></div>
                     <div class="pagination-container" id="pagination-box"></div>
@@ -288,14 +290,11 @@
                     });
                 }
 
-                // Xây dựng nút bấm Phân trang
                 if (totalPages > 1) {
                     let pagHtml = '';
-                    
                     if (currentPage > 1) {
                         pagHtml += `<button class="pag-btn" onclick="changePage(${currentPage - 1})">« Trước</button>`;
                     }
-                    
                     for (let i = 1; i <= totalPages; i++) {
                         if (i === currentPage) {
                             pagHtml += `<button class="pag-btn active">${i}</button>`;
@@ -303,17 +302,13 @@
                             pagHtml += `<button class="pag-btn" onclick="changePage(${i})">${i}</button>`;
                         }
                     }
-                    
                     if (currentPage < totalPages) {
                         pagHtml += `<button class="pag-btn" onclick="changePage(${currentPage + 1})">Sau »</button>`;
                     }
-                    
                     pagBox.innerHTML = pagHtml;
                 }
             }
 
-            // HÀM RENDER TRANG CHI TIẾT CÓ 3 KHUNG SHOPEE (Gắn sẵn mọi Fix)
-           // HÀM RENDER TRANG CHI TIẾT CÓ 3 KHUNG SHOPEE + IN-TEXT AFFILIATE + BÀI VIẾT LIÊN QUAN
             function renderArticleDetail(article) {
                 const menuBar = document.getElementById('menu-bar');
                 if (menuBar) menuBar.style.display = 'none';
@@ -324,7 +319,17 @@
                 const date = article.timestamp ? new Date(article.timestamp).toLocaleString('vi-VN') : 'Mới cập nhật';
                 const shareUrl = window.location.origin + '/api/share?id=' + article.id;
                 
-                if (article.title) { document.title = `${article.title} - DIY Việt Nam`; }
+                let finalContentHtml = article.content || '';
+
+                // 🌟 BỔ SUNG: SEO Meta Description Động
+                if (article.title) { 
+                    document.title = `${article.title} - DIY Việt Nam`; 
+                }
+                const metaDesc = document.getElementById('meta-desc');
+                if (metaDesc && finalContentHtml) {
+                    let plainText = finalContentHtml.replace(/<[^>]+>/g, '');
+                    metaDesc.setAttribute("content", plainText.substring(0, 150) + '...');
+                }
 
                 const promptText = article.image_prompt || article.title || 'technology product';
                 const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
@@ -359,18 +364,14 @@
                     `;
                 }
 
-                // 1. LẤY NỘI DUNG BÀI VIẾT
-                let finalContentHtml = article.content || '';
-                
-                // 2. TỰ ĐỘNG GẮN LINK (IN-TEXT AFFILIATE) VÀO TÊN SẢN PHẨM TRONG BÀI CỦA AI
+                // Tự động gắn link vào chữ (In-text Affiliate) an toàn
                 if (finalProductName && article.shopee_link && finalContentHtml) {
-                    // Tránh lỗi nếu tên sản phẩm có ký tự đặc biệt
                     const safeName = finalProductName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
                     const regex = new RegExp(safeName, 'gi');
                     finalContentHtml = finalContentHtml.replace(regex, `<a href="${article.shopee_link}" target="_blank" style="color: #ee4d2d; font-weight: bold; text-decoration: underline;">${finalProductName}</a>`);
                 }
                 
-                // 3. CẮT ĐÔI BÀI VIẾT ĐỂ NHÉT KHUNG SHOPEE VÀO GIỮA
+                // Cắt đôi bài viết chèn khung
                 if (article.shopee_link && finalContentHtml) {
                     const pTags = finalContentHtml.split('</p>');
                     if (pTags.length > 3) {
@@ -381,7 +382,7 @@
                     }
                 }
 
-                // 4. TẠO BÀI VIẾT LIÊN QUAN (3 Bài)
+                // Bài viết liên quan
                 let relatedHtml = '';
                 if (globalArticlesList && globalArticlesList.length > 0) {
                     let relatedArticles = globalArticlesList.filter(a => (a.category || 'Tổng hợp') === (article.category || 'Tổng hợp') && a.id !== article.id);
@@ -417,7 +418,7 @@
                     }
                 }
 
-                // 5. HIỂN THỊ TẤT CẢ RA GIAO DIỆN
+                // Xuất ra HTML
                 container.innerHTML = `
                     <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
                     <div class="article-detail">
@@ -443,7 +444,6 @@
                             <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
                         </div>
                         
-                        <!-- CHÈN BÀI VIẾT LIÊN QUAN VÀO CUỐI -->
                         ${relatedHtml}
                     </div>
                 `;
