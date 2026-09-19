@@ -221,14 +221,14 @@
 
                 const date = article.timestamp ? new Date(article.timestamp).toLocaleString('vi-VN') : 'Mới cập nhật';
                 
-                // Đổi link chia sẻ hướng về file API Python
+                // Link chia sẻ Facebook (Đã Fix chuẩn)
                 const shareUrl = window.location.origin + '/api/share?id=' + article.id;
                 
                 if (article.title) {
                     document.title = `${article.title} - DIY Việt Nam`;
                 }
 
-                // Xử lý ảnh và giá cho trang chi tiết
+                // Xử lý ảnh và giá 
                 const promptText = article.image_prompt || article.title || 'technology product';
                 const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=1200&height=600&nologo=true`;
                 
@@ -240,6 +240,7 @@
                     tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
                 }
 
+                // 1. TẠO GIAO DIỆN KHUNG SHOPEE MẪU
                 let buttonHtml = '';
                 if (article.shopee_link) {
                     buttonHtml = `
@@ -261,6 +262,29 @@
                     `;
                 }
 
+                // 2. THUẬT TOÁN TỰ ĐỘNG CHÈN KHUNG VÀO GIỮA BÀI VIẾT
+                let finalContentHtml = article.content || '';
+                
+                if (article.shopee_link && finalContentHtml) {
+                    // Cắt bài viết ra thành từng đoạn văn (dựa vào thẻ </p>)
+                    const pTags = finalContentHtml.split('</p>');
+                    
+                    // Chỉ chèn vào giữa nếu bài viết đủ dài (có lớn hơn 3 đoạn văn)
+                    // (Tránh trường hợp bài quá ngắn, 3 khung dính cục vào nhau)
+                    if (pTags.length > 3) {
+                        const middleIndex = Math.floor(pTags.length / 2); // Tìm điểm chính giữa
+                        
+                        // Nối nửa đầu bài viết
+                        const firstHalf = pTags.slice(0, middleIndex).join('</p>') + '</p>';
+                        // Nối nửa sau bài viết
+                        const secondHalf = pTags.slice(middleIndex).join('</p>');
+                        
+                        // Kẹp cái khung Shopee vào giữa 2 nửa bài viết
+                        finalContentHtml = firstHalf + buttonHtml + secondHalf;
+                    }
+                }
+
+                // 3. HIỂN THỊ RA GIAO DIỆN (CÓ 3 VỊ TRÍ)
                 container.innerHTML = `
                     <a href="?" class="back-btn">&larr; Quay lại trang chủ</a>
                     <div class="article-detail">
@@ -270,21 +294,26 @@
                             <span>🕒 Cập nhật: ${date}</span>
                         </div>
                         
+                        <!-- ẢNH BÌA BÀI VIẾT -->
                         <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
                             <img src="${finalImageUrl}" alt="${article.title || ''}" style="width: 100%; height: auto; object-fit: cover;" onerror="this.src='https://picsum.photos/seed/${article.id}/1200/600'">
                         </div>
 
-                        <div class="content">${article.content || ''}</div>
+                        <!-- VỊ TRÍ 1: KHUNG SHOPEE Ở ĐẦU (Dưới ảnh bìa) -->
                         ${buttonHtml}
+
+                        <!-- VỊ TRÍ 2: NỘI DUNG BÀI VIẾT (Đã tự động có thêm khung thứ 2 ở giữa) -->
+                        <div class="content">${finalContentHtml}</div>
+                        
+                        <!-- VỊ TRÍ 3: KHUNG SHOPEE Ở CUỐI (Dưới bài viết) -->
+                        ${buttonHtml}
+
                         ${tagsHtml}
                         
                         <div class="share-box">
                             <span class="share-title">📢 Chia sẻ bài viết:</span>
-                            <!-- Dùng shareUrl cho Facebook -->
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
-                            <!-- Dùng shareUrl cho Zalo -->
+                            <a href="https://www.facebook.com/intent/post?text=${encodeURIComponent(article.title + '\n' + shareUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
                             <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
-                            <!-- Nút copy link cũng copy link API -->
                             <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
                         </div>
                     </div>
