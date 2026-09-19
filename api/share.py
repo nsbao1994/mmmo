@@ -6,18 +6,20 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 
-# Khởi tạo Firebase (giống y hệt file cron)
-if not firebase_admin._apps:
-    firebase_cert_str = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
-    firebase_cert = json.loads(firebase_cert_str)
-    cred = credentials.Certificate(firebase_cert)
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/' 
-    })
-
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
+            # --- CHUYỂN KHỞI TẠO FIREBASE VÀO VÙNG AN TOÀN ---
+            if not firebase_admin._apps:
+                firebase_cert_str = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
+                if not firebase_cert_str:
+                    raise Exception("Chưa cài đặt biến môi trường FIREBASE_SERVICE_ACCOUNT")
+                firebase_cert = json.loads(firebase_cert_str)
+                cred = credentials.Certificate(firebase_cert)
+                firebase_admin.initialize_app(cred, {
+                    'databaseURL': 'https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/' 
+                })
+
             # Lấy ID bài viết từ URL
             parsed_path = urllib.parse.urlparse(self.path)
             query_params = urllib.parse.parse_qs(parsed_path.query)
