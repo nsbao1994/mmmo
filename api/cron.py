@@ -76,14 +76,20 @@ class handler(BaseHTTPRequestHandler):
             - "hashtags": Danh sách 4-5 thẻ hashtag liên quan (mảng string, ví dụ: ["#meohay", "#diyvietnam", "#suachua"])
             - "image_prompt": Một đoạn mô tả ngắn bằng tiếng Anh để tạo hình ảnh AI minh họa chân thực cho mẹo vặt này (string)
             - "content": Nội dung bài viết chi tiết định dạng HTML, ưu tiên dùng các thẻ <h2>, <p>, <ul>, <li>, <strong> để trình bày thật bắt mắt, dễ đọc. (Tuyệt đối không tự chèn thẻ <a> hay link vào trong nội dung). (string)
+            Lưu ý cực kỳ quan trọng: Nội dung HTML trong trường "content" phải được escape (thoát) các dấu ngoặc kép và ký tự xuống dòng đúng chuẩn JSON.
             """
 
             response_text = ""
             for _ in range(3):
                 try:
+                    # Ép Gemini phải trả về JSON chuẩn xác 100%
+                    from google.genai import types
                     response = client.models.generate_content(
                         model='gemini-3.6-flash',
-                        contents=prompt
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            response_mime_type="application/json",
+                        )
                     )
                     response_text = response.text.strip()
                     if response_text.startswith("```json"):
