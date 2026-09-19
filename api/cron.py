@@ -8,18 +8,20 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import db
 
-# Khởi tạo Firebase
-if not firebase_admin._apps:
-    firebase_cert_str = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
-    firebase_cert = json.loads(firebase_cert_str)
-    cred = credentials.Certificate(firebase_cert)
-    firebase_admin.initialize_app(cred, {
-        'databaseURL': 'https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/' 
-    })
-
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
+            # --- 0. KHỞI TẠO FIREBASE Ở ĐÂY (TRONG VÙNG AN TOÀN) ---
+            if not firebase_admin._apps:
+                firebase_cert_str = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
+                if not firebase_cert_str:
+                    raise Exception("Chưa cài đặt biến môi trường FIREBASE_SERVICE_ACCOUNT trên Vercel!")
+                firebase_cert = json.loads(firebase_cert_str)
+                cred = credentials.Certificate(firebase_cert)
+                firebase_admin.initialize_app(cred, {
+                    'databaseURL': 'https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/' 
+                })
+
             queue_ref = db.reference('queue')
             queue_data = queue_ref.get()
             
@@ -33,7 +35,7 @@ class handler(BaseHTTPRequestHandler):
             first_key = list(queue_data.keys())[0]
             item = queue_data[first_key]
             
-            # --- 1. LẤY DỮ LIỆU TỪ HÀNG ĐỢI (Đã sửa lỗi thiếu biến) ---
+            # --- 1. LẤY DỮ LIỆU TỪ HÀNG ĐỢI ---
             keyword = item.get('keyword', 'Mẹo công nghệ')
             product_name = item.get('product_name', '')
             shopee_link_raw = item.get('shopee_link', '')
@@ -41,7 +43,6 @@ class handler(BaseHTTPRequestHandler):
             custom_price = item.get('custom_price', '') 
 
             # --- 2. XỬ LÝ LINK SHOPEE / ACCESSTRADE THÔNG MINH ---
-            # Nếu Admin nhập link tay thì dùng link tay. Nếu Admin bỏ trống thì tự tạo link tìm kiếm có mã AT.
             if shopee_link_raw == "https://shopee.vn" or shopee_link_raw == "":
                 encoded_keyword = urllib.parse.quote(keyword)
                 shopee_search_url = f"https://shopee.vn/search?keyword={encoded_keyword}"
@@ -55,9 +56,12 @@ class handler(BaseHTTPRequestHandler):
 
             # --- 3. GỌI GEMINI AI VIẾT BÀI ---
             gemini_api_key = os.environ.get('GEMINI_API_KEY')
+            if not gemini_api_key:
+                raise Exception("Chưa cài đặt biến môi trường GEMINI_API_KEY trên Vercel!")
+                
             client = genai.Client(api_key=gemini_api_key)
 
-           prompt = f"""
+            prompt = f"""
             Đóng vai một chuyên gia kỹ thuật và mẹo vặt đời sống (Tech & DIY Hacker) nhiều kinh nghiệm. Hãy viết một bài chia sẻ mẹo vặt, hướng dẫn xử lý nhanh hoặc cảnh báo hữu ích về chủ đề: "{keyword}".
             
             Văn phong: Gây tò mò, đi thẳng vào vấn đề, đánh trúng tâm lý người đọc (tiết kiệm tiền, an toàn, nhanh chóng), dễ hiểu và mang tính ứng dụng thực tế cao.
