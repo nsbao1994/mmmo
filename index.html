@@ -311,10 +311,16 @@
 
                         ${tagsHtml}
                         
-                        <div class="share-box">
+                       <div class="share-box">
                             <span class="share-title">📢 Chia sẻ bài viết:</span>
-                            <a href="https://www.facebook.com/intent/post?text=${encodeURIComponent(article.title + '\n' + shareUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
-                            <a href="https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn zalo-share">Zalo / Mạng xã hội</a>
+                            
+                            <!-- Nút Share Facebook (Chuẩn) -->
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn fb-share">Facebook</a>
+                            
+                            <!-- Nút Share Zalo (Chuẩn) -->
+                            <a href="https://zalo.me/share?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn zalo-share">Zalo</a>
+                            
+                            <!-- Nút Copy Link -->
                             <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết bài viết!');" class="share-btn copy-share">📋 Sao chép Link</button>
                         </div>
                     </div>
