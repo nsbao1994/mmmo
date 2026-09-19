@@ -107,6 +107,7 @@ class handler(BaseHTTPRequestHandler):
                 'hashtags': article_json.get('hashtags'),
                 'image_prompt': article_json.get('image_prompt'),
                 'content': article_json.get('content'),
+                'product_name': product_name,
                 'shopee_link': shopee_link,          
                 'custom_img': custom_img,            # Lấy ảnh Admin nhập
                 'custom_price': custom_price,        # Lấy giá Admin nhập
