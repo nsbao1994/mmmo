@@ -234,7 +234,8 @@
                 
                 const finalImageUrl = article.custom_img ? article.custom_img : aiImageUrl;
                 const finalPrice = article.custom_price ? article.custom_price : "Xem trên web";
-
+// THÊM DÒNG NÀY: Ưu tiên Tên Sản Phẩm bạn nhập. Nếu không nhập, lấy Tên bài viết làm dự phòng
+                const finalProductName = article.product_name ? article.product_name : article.title;
                 let tagsHtml = '';
                 if (article.hashtags && Array.isArray(article.hashtags)) {
                     tagsHtml = `<div class="hashtags">` + article.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
@@ -250,7 +251,7 @@
                                     <img src="${finalImageUrl}" alt="Sản phẩm" onerror="this.src='https://picsum.photos/seed/${article.id}/300/300'">
                                 </div>
                                 <div class="shopee-box-info">
-                                    <div class="shopee-box-title">🛒 ${article.title}</div>
+                                    <div class="shopee-box-title">🛒 ${finalProductName}</div>
                                     <div class="shopee-box-price">Giá ưu đãi: <span>${finalPrice}</span></div>
                                     <div class="shopee-box-desc">🔥 Đang có Mã Giảm Giá & Freeship Extra</div>
                                     <span class="shopee-box-btn">
