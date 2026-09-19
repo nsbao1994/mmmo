@@ -51,8 +51,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        window.addTopic = function() {
+       window.addTopic = function() {
                 const topic = document.getElementById('topicInput').value;
+                const productName = document.getElementById('productNameInput').value; // Bổ sung dòng này
                 const shopeeLink = document.getElementById('shopeeLinkInput').value;
                 const img = document.getElementById('imgInput').value;
                 const price = document.getElementById('priceInput').value;
@@ -61,13 +62,15 @@
                 
                 push(ref(db, 'queue'), { 
                     keyword: topic,
+                    product_name: productName || "", // Bổ sung lưu Tên SP lên Firebase
                     shopee_link: shopeeLink || "https://shopee.vn",
-                    custom_img: img || "",      // Lưu ảnh tự nhập
-                    custom_price: price || "",  // Lưu giá tự nhập
+                    custom_img: img || "",      
+                    custom_price: price || "",  
                     added_at: Date.now()
                 }).then(() => {
                     document.getElementById('status').innerText = "✅ Đã thêm chủ đề!";
                     document.getElementById('topicInput').value = "";
+                    document.getElementById('productNameInput').value = ""; // Xóa trắng ô nhập
                     document.getElementById('shopeeLinkInput').value = "";
                     document.getElementById('imgInput').value = "";
                     document.getElementById('priceInput').value = "";
