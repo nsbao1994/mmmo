@@ -35,6 +35,7 @@ class handler(BaseHTTPRequestHandler):
             
             # --- 1. LẤY DỮ LIỆU TỪ HÀNG ĐỢI (Đã sửa lỗi thiếu biến) ---
             keyword = item.get('keyword', 'Mẹo công nghệ')
+            product_name = item.get('product_name', '')
             shopee_link_raw = item.get('shopee_link', '')
             custom_img = item.get('custom_img', '')     
             custom_price = item.get('custom_price', '') 
