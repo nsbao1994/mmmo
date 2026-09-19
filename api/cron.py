@@ -56,14 +56,21 @@ class handler(BaseHTTPRequestHandler):
             gemini_api_key = os.environ.get('GEMINI_API_KEY')
             client = genai.Client(api_key=gemini_api_key)
 
-            prompt = f"""
-            Đóng vai một chuyên gia review sản phẩm và viết bài hướng dẫn kỹ thuật hoặc đánh giá chuyên sâu về chủ đề: "{keyword}".
+           prompt = f"""
+            Đóng vai một chuyên gia kỹ thuật và mẹo vặt đời sống (Tech & DIY Hacker) nhiều kinh nghiệm. Hãy viết một bài chia sẻ mẹo vặt, hướng dẫn xử lý nhanh hoặc cảnh báo hữu ích về chủ đề: "{keyword}".
+            
+            Văn phong: Gây tò mò, đi thẳng vào vấn đề, đánh trúng tâm lý người đọc (tiết kiệm tiền, an toàn, nhanh chóng), dễ hiểu và mang tính ứng dụng thực tế cao.
+            Cấu trúc bài viết (bắt buộc): 
+            1. Nêu vấn đề/Nỗi đau thường gặp.
+            2. Cách giải quyết bằng mẹo vặt (Step-by-step rõ ràng).
+            3. Lời khuyên chọn mua thiết bị/dụng cụ để xử lý triệt để (Đây là bước đệm hoàn hảo để hiển thị sản phẩm mua hàng).
+            
             Yêu cầu đầu ra bắt buộc phải là một đối tượng JSON thuần túy (không chứa markdown như ```json hoặc ```), có đúng các trường sau:
-            - "title": Tiêu đề bài viết hấp dẫn, chuẩn SEO (string)
-            - "category": Chọn 1 trong các danh mục sau cho phù hợp nhất: "Linh kiện điện tử", "Đồ điện tử", "Đồ gia dụng", "Bàn ghế & Nội thất", "Thiết bị làm mát & Quạt", "Năng lượng mặt trời", "Mẹo DIY" (string)
-            - "hashtags": Danh sách 4-5 thẻ hashtag liên quan (mảng string, ví dụ: ["#dodientu", "#dogiadung", "#review"])
-            - "image_prompt": Một đoạn mô tả ngắn gọn bằng tiếng Anh để tạo hình ảnh AI minh họa cho sản phẩm/chủ đề này (string)
-            - "content": Nội dung bài viết chi tiết định dạng HTML, chỉ dùng các thẻ <h2>, <p>, <ul>, <li> để trình bày bài viết (tuyệt đối không tự chèn thẻ a hay link Shopee vào trong nội dung) (string)
+            - "title": Tiêu đề bài viết cực kỳ thu hút, giật tít một chút, khơi gợi sự tò mò (string). Ví dụ: "Đừng vội vứt đồ đi nếu biết mẹo này...", "3 Sai lầm chết người khi dùng..."
+            - "category": Chọn 1 trong các danh mục sau cho phù hợp nhất: "Mẹo DIY", "Linh kiện điện tử", "Đồ điện tử", "Đồ gia dụng", "Năng lượng mặt trời" (string)
+            - "hashtags": Danh sách 4-5 thẻ hashtag liên quan (mảng string, ví dụ: ["#meohay", "#diyvietnam", "#suachua"])
+            - "image_prompt": Một đoạn mô tả ngắn bằng tiếng Anh để tạo hình ảnh AI minh họa chân thực cho mẹo vặt này (string)
+            - "content": Nội dung bài viết chi tiết định dạng HTML, ưu tiên dùng các thẻ <h2>, <p>, <ul>, <li>, <strong> để trình bày thật bắt mắt, dễ đọc. (Tuyệt đối không tự chèn thẻ <a> hay link vào trong nội dung). (string)
             """
 
             response_text = ""
