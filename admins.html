@@ -18,20 +18,25 @@
 
     <div class="box">
             <h3>1. Thêm chủ đề và Link Shopee Affiliate</h3>
-            <label>Chủ đề / Tên sản phẩm:</label>
-            <input type="text" id="topicInput" placeholder="VD: Mạch hạ áp LM2596 (Bắt buộc)">
             
-            <label>Link Affiliate Shopee:</label>
-            <input type="text" id="shopeeLinkInput" placeholder="VD: https://shope.ee/Mã_của_bạn (Bắt buộc)">
+            <label>Chủ đề bài viết (Để Bot AI viết bài - Bắt buộc):</label>
+            <input type="text" id="topicInput" placeholder="VD: Mẹo xử lý quạt kêu to và kẹt trục">
             
-            <label>Link Ảnh sản phẩm thật (Click chuột phải vào ảnh Shopee -> Sao chép địa chỉ hình ảnh):</label>
-            <input type="text" id="imgInput" placeholder="VD: https://down-vn.img.susercontent.com/file/... (Không bắt buộc)">
+            <!-- THÊM Ô NÀY: Tên sản phẩm riêng biệt -->
+            <label>Tên sản phẩm thật (Sẽ hiển thị trong khung Shopee - Không bắt buộc):</label>
+            <input type="text" id="productNameInput" placeholder="VD: Dầu bôi trơn chống rỉ sét RP7">
             
-            <label>Giá sản phẩm thật:</label>
-            <input type="text" id="priceInput" placeholder="VD: 155.000đ (Không bắt buộc)">
+            <label>Link Affiliate Shopee (Bắt buộc):</label>
+            <input type="text" id="shopeeLinkInput" placeholder="VD: https://shope.ee/Mã_của_bạn">
+            
+            <label>Link Ảnh sản phẩm thật (Không bắt buộc):</label>
+            <input type="text" id="imgInput" placeholder="VD: https://down-vn.img.susercontent.com/file/...">
+            
+            <label>Giá sản phẩm thật (Không bắt buộc):</label>
+            <input type="text" id="priceInput" placeholder="VD: 45.000đ">
             
             <button onclick="addTopic()">Thêm vào hàng đợi</button>
-         <button onclick="clearQueue()" style="background-color: #dc3545; margin-top: 15px;">🗑️ Xóa toàn bộ hàng đợi</button>
+            <button onclick="clearQueue()" style="background-color: #dc3545; margin-left: 10px;">🗑️ Xóa toàn bộ hàng đợi</button>
         </div>
 
 
