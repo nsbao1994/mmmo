@@ -20,9 +20,15 @@
 
         .page-layout { display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; align-items: start; }
         
+        /* --- CSS THANH TÌM KIẾM --- */
+        .search-container { display: flex; gap: 10px; margin-bottom: 25px; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .search-container input { flex-grow: 1; padding: 12px 20px; border: 1px solid #ddd; border-radius: 25px; font-size: 1.05em; outline: none; transition: 0.3s; font-family: inherit; }
+        .search-container input:focus { border-color: var(--primary-color); box-shadow: 0 0 8px rgba(0,102,204,0.2); }
+        .search-container button { background: var(--primary-color); color: white; border: none; padding: 12px 25px; border-radius: 25px; font-weight: bold; font-size: 1em; cursor: pointer; transition: 0.3s; white-space: nowrap; }
+        .search-container button:hover { background: #0052a3; transform: translateY(-2px); }
+
         .jobs-container { display: flex; flex-direction: column; gap: 30px; }
         
-        /* --- CSS MỚI CHO CARD VIỆC LÀM (HIỂN THỊ DẠNG BẢNG TIN FACEBOOK) --- */
         .job-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 5px solid var(--primary-color); display: flex; flex-direction: column; gap: 18px; }
         
         .job-header { display: flex; flex-direction: column; gap: 12px; }
@@ -32,16 +38,13 @@
         .job-meta span { background: #f1f3f5; padding: 6px 12px; border-radius: 6px; font-weight: 600; }
         .job-salary { color: var(--accent-color) !important; font-weight: bold; }
         
-        /* KHU VỰC HÌNH ẢNH TO, GIỮ NGUYÊN TỶ LỆ */
         .job-image { width: 100%; border-radius: 8px; overflow: hidden; background: #f0f2f5; display: flex; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box; }
-        /* Dùng object-fit: contain để ảnh không bao giờ bị cắt xén */
         .job-image img { width: 100%; height: auto; max-height: 750px; object-fit: contain; border-radius: 4px; }
         
         .job-body { display: flex; flex-direction: column; gap: 15px; }
         .job-desc { white-space: pre-wrap; line-height: 1.7; color: #333; font-size: 1.05em; background: #fafbfc; padding: 20px; border-radius: 8px; border: 1px dashed #ccc; }
         .contact-box { background: #e3f2fd; padding: 15px; border-radius: 8px; border: 1px solid #b6e0fe; font-weight: bold; color: #0056b3; display: inline-block; font-size: 1.1em; text-align: center; }
         
-        /* CÁC NÚT CHIA SẺ */
         .share-box-job { margin-top: 5px; padding-top: 15px; border-top: 1px solid #eee; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; width: 100%; }
         .share-btn-job { padding: 8px 16px; border-radius: 6px; color: white; text-decoration: none; font-size: 0.95em; font-weight: 600; cursor: pointer; border: none; display: inline-flex; align-items: center; transition: opacity 0.2s; }
         .share-btn-job:hover { opacity: 0.85; }
@@ -51,7 +54,6 @@
         .detail-btn { background: var(--primary-color); color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-size: 0.95em; font-weight: 600; margin-left: auto; transition: 0.2s; }
         .detail-btn:hover { background: #0052a3; }
 
-        /* SIDEBAR (Ghim cố định khi cuộn) */
         .sidebar { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: sticky; top: 20px; }
         .sidebar-title { font-size: 1.25em; color: var(--accent-color); border-bottom: 2px dashed #eee; padding-bottom: 12px; margin-top: 0; margin-bottom: 20px; }
         .suggested-articles { display: flex; flex-direction: column; gap: 18px; }
@@ -66,6 +68,8 @@
             .page-layout { grid-template-columns: 1fr; } 
             .detail-btn { margin-left: 0; width: 100%; text-align: center; margin-top: 10px; }
             .share-box-job { flex-direction: column; align-items: stretch; text-align: center; }
+            .search-container { flex-direction: column; }
+            .search-container button { width: 100%; }
         }
     </style>
 </head>
@@ -73,21 +77,29 @@
 
     <header>
         <h1 onclick="window.location.href='index.html'">⚡ DIY Việt Nam</h1>
-        <div class="slogan">Kênh việc làm </div>
+        <div class="slogan">Kênh việc làm</div>
     </header>
 
     <div class="nav-menu">
         <a href="index.html">📖 Đọc Blog Mẹo Vặt</a>
-        <a href="jobs.html" class="active">💼 Việc Làm Kỹ Thuật</a>
+        <a href="jobs.html" class="active">💼 Việc Làm </a>
     </div>
 
     <div class="page-layout">
-        <!-- Khu vực chứa danh sách Việc làm -->
-        <div id="jobs-list" class="jobs-container">
-            <p class="loading">⏳ Đang tải tin tuyển dụng...</p>
+        <!-- Khối bên trái: Tìm kiếm & Danh sách Việc làm -->
+        <div>
+            <!-- THANH TÌM KIẾM -->
+            <div class="search-container" id="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Nhập vị trí, công ty hoặc khu vực (VD: Hà Nội)...">
+                <button id="searchBtn">Tìm Kiếm</button>
+            </div>
+
+            <div id="jobs-list" class="jobs-container">
+                <p class="loading">⏳ Đang tải tin tuyển dụng...</p>
+            </div>
         </div>
         
-        <!-- Khu vực chứa Bài viết Đề xuất -->
+        <!-- Khối bên phải: Bài viết Đề xuất -->
         <div class="sidebar">
             <h3 class="sidebar-title">🔥 Có thể bạn quan tâm</h3>
             <div id="sidebar-articles" class="suggested-articles">
@@ -103,6 +115,8 @@
         const firebaseConfig = { databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+
+        let globalJobsArray = []; // Lưu trữ toàn bộ công việc để tìm kiếm
 
         // 1. TẢI DANH SÁCH VIỆC LÀM
         const jobsRef = query(ref(db, 'jobs'), orderByChild('timestamp'));
@@ -120,28 +134,77 @@
                 jobsArray.push(jobData); 
             });
             jobsArray.reverse(); 
+            globalJobsArray = jobsArray; // Đẩy vào mảng toàn cục
             
             const urlParams = new URLSearchParams(window.location.search);
             const targetJobId = urlParams.get('id');
-            let html = '';
 
+            // NẾU ĐANG XEM CHI TIẾT 1 CÔNG VIỆC CỤ THỂ
             if (targetJobId) {
+                document.getElementById('search-box').style.display = 'none'; // Giấu thanh tìm kiếm đi
+                
                 const specificJob = jobsArray.find(j => j.id === targetJobId);
+                let html = '';
                 if (specificJob) {
                     html += `<a href="jobs.html" style="display:inline-block; margin-bottom:15px; text-decoration:none; color:#0066cc; font-weight:bold; background: white; padding: 10px 20px; border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">&larr; Xem tất cả Việc làm</a>`;
                     html += renderJobCard(specificJob, true);
                 } else {
                     html += `<p style="text-align:center; color:red;">Tin tuyển dụng này không tồn tại hoặc đã bị xóa.</p><a href="jobs.html">Quay lại</a>`;
                 }
+                container.innerHTML = html;
+            } 
+            // NẾU ĐANG Ở TRANG DANH SÁCH TỔNG
+            else {
+                renderJobList(globalJobsArray);
+            }
+        });
+
+        // HÀM RENDER DANH SÁCH (HỖ TRỢ TÌM KIẾM)
+        function renderJobList(arrayToRender) {
+            const container = document.getElementById('jobs-list');
+            let html = '';
+            
+            if (arrayToRender.length === 0) {
+                html = '<p style="text-align:center; padding: 30px; background:white; border-radius:8px; color:#ee4d2d; font-weight:bold;">Không tìm thấy công việc nào phù hợp với từ khóa của bạn.</p>';
             } else {
-                jobsArray.forEach(job => {
+                arrayToRender.forEach(job => {
                     html += renderJobCard(job, false);
                 });
             }
             container.innerHTML = html;
-        });
+        }
 
-        // HÀM TẠO GIAO DIỆN CÔNG VIỆC KIỂU BẢNG TIN (FEED)
+        // BỘ LỌC TÌM KIẾM THEO THỜI GIAN THỰC (REAL-TIME)
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+
+        function performSearch() {
+            const keyword = searchInput.value.toLowerCase().trim();
+            
+            if (!keyword) {
+                renderJobList(globalJobsArray); // Nếu ô tìm kiếm trống, hiện tất cả
+                return;
+            }
+            
+            const filteredJobs = globalJobsArray.filter(job => {
+                const titleMatch = (job.title || '').toLowerCase().includes(keyword);
+                const companyMatch = (job.company || '').toLowerCase().includes(keyword);
+                const locationMatch = (job.location || '').toLowerCase().includes(keyword);
+                
+                // Trả về TRUE nếu từ khóa xuất hiện ở 1 trong 3 trường trên
+                return titleMatch || companyMatch || locationMatch;
+            });
+            
+            renderJobList(filteredJobs);
+        }
+
+        // Lắng nghe sự kiện gõ phím (Lọc ngay khi đang gõ)
+        searchInput.addEventListener('input', performSearch);
+        // Lắng nghe sự kiện bấm nút Tìm Kiếm
+        searchBtn.addEventListener('click', performSearch);
+
+
+        // HÀM TẠO GIAO DIỆN CÔNG VIỆC KIỂU BẢNG TIN
         function renderJobCard(job, isDetailView) {
             const date = new Date(job.timestamp).toLocaleDateString('vi-VN');
             const imgSrc = job.image ? job.image : "https://cdn-icons-png.flaticon.com/512/3281/3281289.png";
@@ -160,7 +223,6 @@
 
             return `
                 <div class="job-card">
-                    <!-- 1. Header: Tiêu đề & Thông tin -->
                     <div class="job-header">
                         <h2 class="job-title"><a href="?id=${job.id}" style="color: inherit; text-decoration: none;">${job.title}</a></h2>
                         <div class="job-meta">
@@ -171,14 +233,12 @@
                         </div>
                     </div>
                     
-                    <!-- 2. Ảnh hiển thị Full tỷ lệ -->
                     <div class="job-image">
                         <a href="?id=${job.id}" style="display:block; width:100%; text-align:center;">
                             <img src="${imgSrc}" alt="${job.company}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3281/3281289.png'">
                         </a>
                     </div>
                     
-                    <!-- 3. Nội dung & Liên hệ -->
                     <div class="job-body">
                         <div class="job-desc">${job.description || 'Không có mô tả thêm.'}</div>
                         <div class="contact-box">
@@ -186,7 +246,6 @@
                         </div>
                     </div>
                     
-                    <!-- 4. Chia sẻ -->
                     ${shareHtml}
                 </div>
             `;
