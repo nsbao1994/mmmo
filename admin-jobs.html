@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng Tin Tuyển Dụng</title>
+    <style>
+        body { font-family: Arial; padding: 20px; max-width: 700px; margin: 0 auto; background: #f4f4f9; }
+        .box { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #0066cc; text-align: center; }
+        label { font-weight: bold; margin-top: 10px; display: block; color: #333; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 20px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
+        button { background: #0066cc; color: white; border: none; padding: 12px 25px; cursor: pointer; border-radius: 4px; font-size: 16px; font-weight: bold; width: 100%; }
+        button:hover { background: #0052a3; }
+        #status { color: green; font-weight: bold; text-align: center; margin-bottom: 15px; }
+        .nav-links { text-align: center; margin-bottom: 20px; }
+        .nav-links a { color: #555; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { color: #0066cc; }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <a href="admins.html">&larr; Quay lại Admin Blog</a>
+    </div>
+    
+    <div class="box">
+        <h1>📝 Đăng Tin Tuyển Dụng Mới</h1>
+        <p id="status"></p>
+
+        <label>Vị trí tuyển dụng (Bắt buộc):</label>
+        <input type="text" id="jobTitle" placeholder="VD: Kỹ thuật viên Lắp đặt năng lượng mặt trời">
+        
+        <label>Tên công ty / Cửa hàng:</label>
+        <input type="text" id="companyName" placeholder="VD: Công ty TNHH Điện Năng Vina">
+        
+        <label>Khu vực làm việc:</label>
+        <input type="text" id="location" placeholder="VD: Quận 1, TP.HCM / Toàn quốc">
+        
+        <label>Mức lương / Chế độ:</label>
+        <input type="text" id="salary" placeholder="VD: 10.000.000đ - 15.000.000đ + Thưởng">
+        
+        <label>Mô tả chi tiết công việc & Yêu cầu:</label>
+        <textarea id="description" rows="6" placeholder="- Lắp đặt, bảo trì mạch điện...&#10;- Yêu cầu: Có kinh nghiệm 1 năm..."></textarea>
+        
+        <label>Thông tin liên hệ (SĐT / Zalo / Email):</label>
+        <input type="text" id="contact" placeholder="VD: 0909.xxx.xxx (Anh A) hoặc email@gmail.com">
+        
+        <button onclick="postJob()">🚀 Đăng Tin Ngay</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+        const firebaseConfig = {
+            databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.postJob = function() {
+            const title = document.getElementById('jobTitle').value;
+            const company = document.getElementById('companyName').value;
+            const location = document.getElementById('location').value;
+            const salary = document.getElementById('salary').value;
+            const description = document.getElementById('description').value;
+            const contact = document.getElementById('contact').value;
+            
+            if(!title || !contact) return alert("Vị trí tuyển dụng và Thông tin liên hệ là bắt buộc!");
+            
+            // Đẩy dữ liệu thẳng lên nhánh 'jobs' của Firebase
+            push(ref(db, 'jobs'), { 
+                title: title,
+                company: company,
+                location: location,
+                salary: salary,
+                description: description,
+                contact: contact,
+                timestamp: Date.now()
+            }).then(() => {
+                document.getElementById('status').innerText = "✅ Đã đăng tin tuyển dụng thành công!";
+                document.getElementById('jobTitle').value = "";
+                document.getElementById('companyName').value = "";
+                document.getElementById('location').value = "";
+                document.getElementById('salary').value = "";
+                document.getElementById('description').value = "";
+                document.getElementById('contact').value = "";
+                setTimeout(() => document.getElementById('status').innerText = "", 4000);
+            }).catch(err => {
+                alert("Có lỗi xảy ra: " + err);
+            });
+        }
+    </script>
+</body>
+</html>
