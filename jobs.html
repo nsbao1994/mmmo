@@ -7,7 +7,7 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" type="image/png">
     <style>
         :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
         
         header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
         h1 { margin: 0 0 10px 0; font-size: 2em; cursor: pointer; }
@@ -18,24 +18,39 @@
         .nav-menu a:hover { background: #f0f0f0; }
         .nav-menu a.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
 
+        /* Bố cục 2 cột (Việc làm bên trái, Bài viết đề xuất bên phải) */
+        .page-layout { display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; align-items: start; }
+        
+        /* CỘT VIỆC LÀM */
         .jobs-container { display: flex; flex-direction: column; gap: 20px; }
-        .job-card { background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--primary-color); }
+        .job-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--primary-color); display: flex; gap: 20px; }
+        .job-image { flex-shrink: 0; width: 140px; height: 140px; border-radius: 8px; border: 1px solid #eee; overflow: hidden; background: #f9f9f9; display: flex; align-items: center; justify-content: center; }
+        .job-image img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .job-content { flex-grow: 1; }
         .job-title { color: var(--primary-color); font-size: 1.4em; margin: 0 0 10px 0; }
-        .job-meta { display: flex; flex-wrap: wrap; gap: 15px; margin-bottom: 15px; font-size: 0.95em; color: #555; }
-        .job-meta span { background: #f1f3f5; padding: 5px 10px; border-radius: 5px; font-weight: 500; }
+        .job-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; font-size: 0.9em; color: #555; }
+        .job-meta span { background: #f1f3f5; padding: 4px 8px; border-radius: 5px; font-weight: 500; }
         .job-salary { color: var(--accent-color) !important; font-weight: bold; }
+        .job-desc { white-space: pre-wrap; line-height: 1.6; color: #444; margin-bottom: 15px; font-size: 0.95em; }
+        .contact-box { background: #e3f2fd; padding: 10px 15px; border-radius: 6px; border: 1px solid #b6e0fe; font-weight: bold; color: #0056b3; display: inline-block; }
         
-        .job-desc { white-space: pre-wrap; line-height: 1.6; color: #444; margin-bottom: 20px; background: #fafbfc; padding: 15px; border-radius: 6px; border: 1px dashed #ccc; }
-        
-        .contact-box { background: #e3f2fd; padding: 15px; border-radius: 6px; border: 1px solid #b6e0fe; font-weight: bold; color: #0056b3; display: inline-block; }
-        
+        /* CỘT BÀI VIẾT ĐỀ XUẤT (SIDEBAR) */
+        .sidebar { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .sidebar-title { font-size: 1.2em; color: var(--accent-color); border-bottom: 2px dashed #eee; padding-bottom: 10px; margin-top: 0; margin-bottom: 15px; }
+        .suggested-articles { display: flex; flex-direction: column; gap: 15px; }
+        .sugg-card { display: flex; gap: 10px; text-decoration: none; color: #333; align-items: center; transition: 0.2s; }
+        .sugg-card:hover { transform: translateX(5px); color: var(--primary-color); }
+        .sugg-img { width: 80px; height: 60px; border-radius: 6px; object-fit: cover; background: #eee; flex-shrink: 0; }
+        .sugg-title { font-size: 0.95em; font-weight: bold; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
         .loading { text-align: center; color: #666; font-style: italic; padding: 40px; }
 
-        @media (max-width: 600px) {
-            body { padding: 10px; }
-            header { padding: 20px 15px; }
-            h1 { font-size: 1.5em; }
-            .job-meta { flex-direction: column; gap: 8px; }
+        @media (max-width: 800px) {
+            .page-layout { grid-template-columns: 1fr; } /* Gộp thành 1 cột trên Mobile */
+            .job-card { flex-direction: column; align-items: center; text-align: center; }
+            .job-image { width: 100%; height: 200px; }
+            .job-meta { justify-content: center; }
         }
     </style>
 </head>
@@ -51,58 +66,100 @@
         <a href="jobs.html" class="active">💼 Việc Làm Kỹ Thuật</a>
     </div>
 
-    <div id="jobs-list" class="jobs-container">
-        <p class="loading">⏳ Đang tải tin tuyển dụng...</p>
+    <div class="page-layout">
+        <!-- Khu vực chứa danh sách Việc làm -->
+        <div id="jobs-list" class="jobs-container">
+            <p class="loading">⏳ Đang tải tin tuyển dụng...</p>
+        </div>
+        
+        <!-- Khu vực chứa Bài viết Đề xuất -->
+        <div class="sidebar">
+            <h3 class="sidebar-title">🔥 Có thể bạn quan tâm</h3>
+            <div id="sidebar-articles" class="suggested-articles">
+                <p style="font-size: 14px; color: #888;">Đang tải bài viết...</p>
+            </div>
+        </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-        import { getDatabase, ref, onValue, query, orderByChild } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+        import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-        const firebaseConfig = {
-            databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
-
+        const firebaseConfig = { databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/" };
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // 1. TẢI DANH SÁCH VIỆC LÀM
         const jobsRef = query(ref(db, 'jobs'), orderByChild('timestamp'));
-
         onValue(jobsRef, (snapshot) => {
             const container = document.getElementById('jobs-list');
             if (!snapshot.exists()) {
-                container.innerHTML = '<p style="text-align:center;">Hiện chưa có tin tuyển dụng nào.</p>';
+                container.innerHTML = '<p style="text-align:center; padding: 30px; background:white; border-radius:8px;">Hiện chưa có tin tuyển dụng nào.</p>';
                 return;
             }
 
             let jobsArray = [];
-            snapshot.forEach((childSnapshot) => {
-                jobsArray.push(childSnapshot.val());
-            });
-            
-            // Đảo ngược để việc làm mới nhất lên đầu
-            jobsArray.reverse();
+            snapshot.forEach((child) => { jobsArray.push(child.val()); });
+            jobsArray.reverse(); // Mới nhất lên đầu
             
             let html = '';
             jobsArray.forEach(job => {
                 const date = new Date(job.timestamp).toLocaleDateString('vi-VN');
+                // Nếu không có ảnh, dùng một ảnh mặc định icon công việc
+                const imgSrc = job.image ? job.image : "https://cdn-icons-png.flaticon.com/512/3281/3281289.png";
+                
                 html += `
                     <div class="job-card">
-                        <h2 class="job-title">${job.title}</h2>
-                        <div class="job-meta">
-                            <span>🏢 ${job.company || 'Bảo mật thông tin'}</span>
-                            <span>📍 ${job.location || 'Chưa cập nhật'}</span>
-                            <span class="job-salary">💰 ${job.salary || 'Thỏa thuận'}</span>
-                            <span>🕒 Đăng ngày: ${date}</span>
+                        <div class="job-image">
+                            <img src="${imgSrc}" alt="${job.company}" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3281/3281289.png'">
                         </div>
-                        <div class="job-desc">${job.description || 'Không có mô tả thêm.'}</div>
-                        <div class="contact-box">
-                            📞 Liên hệ ứng tuyển: ${job.contact}
+                        <div class="job-content">
+                            <h2 class="job-title">${job.title}</h2>
+                            <div class="job-meta">
+                                <span>🏢 ${job.company || 'Bảo mật thông tin'}</span>
+                                <span>📍 ${job.location || 'Chưa cập nhật'}</span>
+                                <span class="job-salary">💰 ${job.salary || 'Thỏa thuận'}</span>
+                                <span>🕒 ${date}</span>
+                            </div>
+                            <div class="job-desc">${job.description || 'Không có mô tả thêm.'}</div>
+                            <div class="contact-box">
+                                📞 Liên hệ ứng tuyển: ${job.contact}
+                            </div>
                         </div>
                     </div>
                 `;
             });
             container.innerHTML = html;
+        });
+
+        // 2. TẢI 6 BÀI VIẾT BLOG MỚI NHẤT ĐỂ ĐỀ XUẤT VÀO SIDEBAR
+        const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(6));
+        onValue(articlesRef, (snapshot) => {
+            const sidebar = document.getElementById('sidebar-articles');
+            if (!snapshot.exists()) return;
+            
+            let articlesArray = [];
+            snapshot.forEach((child) => { 
+                let data = child.val();
+                data.id = child.key;
+                articlesArray.push(data); 
+            });
+            articlesArray.reverse();
+            
+            let suggHtml = '';
+            articlesArray.forEach(a => {
+                const promptText = a.image_prompt || a.title || 'technology';
+                const aiImageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=150&height=150&nologo=true`;
+                const finalImageUrl = a.custom_img ? a.custom_img : aiImageUrl;
+                
+                suggHtml += `
+                    <a href="/index.html?id=${a.id}" class="sugg-card">
+                        <img src="${finalImageUrl}" class="sugg-img" onerror="this.src='https://picsum.photos/seed/${a.id}/150/150'">
+                        <div class="sugg-title">${a.title}</div>
+                    </a>
+                `;
+            });
+            sidebar.innerHTML = suggHtml;
         });
     </script>
 </body>
