@@ -82,7 +82,16 @@
         import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
-        const firebaseConfig = { databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/" };
+        const firebaseConfig = {
+  apiKey: "AIzaSyBCRLd6-DU9OQuzZGuAixgc1jLEZrAZgO0",
+  authDomain: "mmo-1-a7a47.firebaseapp.com",
+  databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "mmo-1-a7a47",
+  storageBucket: "mmo-1-a7a47.firebasestorage.app",
+  messagingSenderId: "103215113778",
+  appId: "1:103215113778:web:161e4129dadfe2f5ba7e2b",
+  measurementId: "G-RXYMGBZK2W"
+};
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         const auth = getAuth(app);
