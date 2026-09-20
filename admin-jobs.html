@@ -49,7 +49,15 @@
 
             <label>Vị trí tuyển dụng (Bắt buộc):</label>
             <input type="text" id="jobTitle" placeholder="VD: Kỹ thuật viên Lắp đặt năng lượng mặt trời">
-            
+            <!-- THÊM Ô CHỌN NGÀNH NGHỀ VÀO ĐÂY -->
+            <label>Ngành nghề:</label>
+            <select id="jobCategory" style="width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit;">
+                <option value="Kỹ thuật / IT">Kỹ thuật / IT</option>
+                <option value="Kinh doanh / Bán hàng">Kinh doanh / Bán hàng</option>
+                <option value="Kế toán / Hành chính">Kế toán / Hành chính</option>
+                <option value="Lao động phổ thông">Lao động phổ thông</option>
+                <option value="Khác">Khác</option>
+            </select>
             <label>Tên công ty / Cửa hàng:</label>
             <input type="text" id="companyName" placeholder="VD: Công ty TNHH Điện Năng Vina">
 
@@ -163,6 +171,7 @@
             if (!currentUser) return alert("Bạn cần đăng nhập!");
 
             const title = document.getElementById('jobTitle').value;
+            const category = document.getElementById('jobCategory').value;
             const company = document.getElementById('companyName').value;
             const location = document.getElementById('location').value;
             const salary = document.getElementById('salary').value;
@@ -174,6 +183,7 @@
             // Đẩy dữ liệu vào nhánh chờ duyệt, kèm theo Link Ảnh đã upload
             push(ref(db, 'jobs_pending'), { 
                 title: title,
+                category: category, // Bổ sung lưu category
                 company: company,
                 image: uploadedImageUrl, // <--- Bổ sung link ảnh vào database
                 location: location,
