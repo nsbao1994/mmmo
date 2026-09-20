@@ -113,15 +113,20 @@
             for (const jobId in pendingJobsData) {
                 const job = pendingJobsData[jobId];
                 const date = new Date(job.timestamp).toLocaleString('vi-VN');
+                const imgTag = job.image ? `<img src="${job.image}" style="width:100px; height:100px; object-fit:cover; border-radius:5px; float:left; margin-right:15px;">` : '';
+                
                 html += `
-                    <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 6px; background: #fafbfc;">
-                        <h4 style="margin: 0 0 10px 0; color: #0066cc;">${job.title}</h4>
-                        <p style="margin: 5px 0; font-size: 14px;"><strong>Công ty:</strong> ${job.company} | <strong>Lương:</strong> ${job.salary}</p>
-                        <p style="margin: 5px 0; font-size: 14px;"><strong>Người đăng:</strong> ${job.submitter_name} (${job.submitter_email})</p>
-                        <p style="margin: 5px 0; font-size: 14px;"><strong>Thời gian:</strong> ${date}</p>
-                        <div style="margin-top: 15px;">
-                            <button onclick="approveJob('${jobId}')" style="background: #28a745; padding: 8px 15px; font-size: 13px;">✅ Duyệt & Đăng</button>
-                            <button onclick="rejectJob('${jobId}')" style="background: #dc3545; padding: 8px 15px; font-size: 13px; margin-left: 10px;">❌ Từ chối (Xóa)</button>
+                    <div style="border: 1px solid #ddd; padding: 15px; margin-bottom: 15px; border-radius: 6px; background: #fafbfc; overflow: hidden;">
+                        ${imgTag}
+                        <div style="overflow: hidden;">
+                            <h4 style="margin: 0 0 10px 0; color: #0066cc;">${job.title}</h4>
+                            <p style="margin: 5px 0; font-size: 14px;"><strong>Công ty:</strong> ${job.company} | <strong>Lương:</strong> ${job.salary}</p>
+                            <p style="margin: 5px 0; font-size: 14px;"><strong>Người đăng:</strong> ${job.submitter_name} (${job.submitter_email})</p>
+                            <p style="margin: 5px 0; font-size: 14px;"><strong>Thời gian:</strong> ${date}</p>
+                            <div style="margin-top: 15px;">
+                                <button onclick="approveJob('${jobId}')" style="background: #28a745; padding: 8px 15px; font-size: 13px;">✅ Duyệt & Đăng</button>
+                                <button onclick="rejectJob('${jobId}')" style="background: #dc3545; padding: 8px 15px; font-size: 13px; margin-left: 10px;">❌ Từ chối</button>
+                            </div>
                         </div>
                     </div>
                 `;
