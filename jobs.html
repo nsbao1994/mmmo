@@ -190,7 +190,7 @@
                 const titleMatch = (job.title || '').toLowerCase().includes(keyword);
                 const companyMatch = (job.company || '').toLowerCase().includes(keyword);
                 const locationMatch = (job.location || '').toLowerCase().includes(keyword);
-                
+                const categoryMatch = (job.category || '').toLowerCase().includes(keyword);
                 // Trả về TRUE nếu từ khóa xuất hiện ở 1 trong 3 trường trên
                 return titleMatch || companyMatch || locationMatch;
             });
@@ -208,7 +208,7 @@
         function renderJobCard(job, isDetailView) {
             const date = new Date(job.timestamp).toLocaleDateString('vi-VN');
             const imgSrc = job.image ? job.image : "https://cdn-icons-png.flaticon.com/512/3281/3281289.png";
-            
+            const categoryBadge = job.category ? `<span style="background: #e9ecef; color: #495057;">🏷️ ${job.category}</span>` : '';
             const shareApiUrl = window.location.origin + '/api/share_job?id=' + job.id;
             
             const shareHtml = `
@@ -226,6 +226,7 @@
                     <div class="job-header">
                         <h2 class="job-title"><a href="?id=${job.id}" style="color: inherit; text-decoration: none;">${job.title}</a></h2>
                         <div class="job-meta">
+                        ${categoryBadge} <!-- Hiển thị thẻ Ngành nghề ở đây -->
                             <span>🏢 ${job.company || 'Bảo mật thông tin'}</span>
                             <span>📍 ${job.location || 'Chưa cập nhật'}</span>
                             <span class="job-salary">💰 ${job.salary || 'Thỏa thuận'}</span>
