@@ -459,8 +459,8 @@
                             <span>🕒 Cập nhật: ${date}</span>
                         </div>
                         
-                        <div style="margin-bottom: 25px; border-radius: 8px; overflow: hidden; max-height: 400px; background: #eee;">
-                            <img src="${finalImageUrl}" alt="${article.title || ''}" style="width: 100%; height: auto; object-fit: cover;" onerror="this.src='https://picsum.photos/seed/${article.id}/1200/600'">
+                       <div style="margin-bottom: 25px; border-radius: 8px; background: #f0f2f5; display: flex; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;">
+                            <img src="${finalImageUrl}" alt="${article.title || ''}" style="max-width: 100%; max-height: 600px; width: auto; height: auto; object-fit: contain; border-radius: 6px;" onerror="this.src='https://picsum.photos/seed/${article.id}/1200/600'">
                         </div>
 
                         ${buttonHtml}
