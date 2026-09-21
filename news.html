@@ -95,7 +95,16 @@
             let html = '';
             newsArray.forEach(news => {
                 const date = new Date(news.timestamp).toLocaleString('vi-VN');
-                const sourceLink = news.source ? `<div class="news-source">Nguồn: <a href="${news.source}" target="_blank">Xem chi tiết &rarr;</a></div>` : '';
+               let sourceLink = '';
+            if (news.source) {
+                // Nếu là đường link (bắt đầu bằng http) thì cho phép bấm
+                if (news.source.startsWith('http')) {
+                    sourceLink = `<div class="news-source">Nguồn: <a href="${news.source}" target="_blank">Xem chi tiết &rarr;</a></div>`;
+                } else {
+                    // Nếu chỉ là chữ (ví dụ: AI Tổng hợp) thì chỉ in đậm, không cho bấm
+                    sourceLink = `<div class="news-source">Nguồn: <span style="font-weight:bold; color: #3498db;">${news.source}</span></div>`;
+                }
+            }
                 
                 html += `
                     <div class="news-card">
