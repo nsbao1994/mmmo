@@ -95,17 +95,30 @@
             let html = '';
             newsArray.forEach(news => {
                 const date = new Date(news.timestamp).toLocaleString('vi-VN');
-               let sourceLink = '';
-            if (news.source) {
-                // Nếu là đường link (bắt đầu bằng http) thì cho phép bấm
-                if (news.source.startsWith('http')) {
-                    sourceLink = `<div class="news-source">Nguồn: <a href="${news.source}" target="_blank">Xem chi tiết &rarr;</a></div>`;
-                } else {
-                    // Nếu chỉ là chữ (ví dụ: AI Tổng hợp) thì chỉ in đậm, không cho bấm
-                    sourceLink = `<div class="news-source">Nguồn: <span style="font-weight:bold; color: #3498db;">${news.source}</span></div>`;
-                }
-            }
                 
+                // 1. Xử lý link Nguồn thông minh
+                let sourceLink = '';
+                if (news.source) {
+                    if (news.source.startsWith('http')) {
+                        sourceLink = `<div class="news-source">Nguồn: <a href="${news.source}" target="_blank">Xem chi tiết &rarr;</a></div>`;
+                    } else {
+                        sourceLink = `<div class="news-source">Nguồn: <span style="font-weight:bold; color: #3498db;">${news.source}</span></div>`;
+                    }
+                }
+
+                // 2. TẠO HTML CHO NÚT CHIA SẺ
+                // Ở đây ta dùng URL trang chủ tin tức để chia sẻ
+                const shareUrl = window.location.origin + '/news.html'; 
+                const shareHtml = `
+                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                        <span style="font-size: 0.9em; font-weight: bold; color: #555;">📢 Chia sẻ:</span>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" style="background: #1877f2; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; text-decoration: none; font-weight: bold; display: inline-block;">Facebook</a>
+                        <a href="https://zalo.me/share?url=${encodeURIComponent(shareUrl)}" target="_blank" style="background: #0068ff; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; text-decoration: none; font-weight: bold; display: inline-block;">Zalo</a>
+                        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết!');" style="background: #6c757d; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; text-decoration: none; font-weight: bold; border: none; cursor: pointer;">📋 Copy Link</button>
+                    </div>
+                `;
+                
+                // 3. Render toàn bộ Thẻ tin tức
                 html += `
                     <div class="news-card">
                         <div class="news-header">
@@ -118,11 +131,11 @@
                             <span>🕒 ${date}</span>
                             ${sourceLink}
                         </div>
+                        ${shareHtml}
                     </div>
                 `;
             });
             container.innerHTML = html;
-        });
 
         // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
         const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(5));
