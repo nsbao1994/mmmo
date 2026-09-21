@@ -11,76 +11,82 @@ from google.genai import types
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         try:
-            # 1. Khởi tạo Firebase (Sử dụng biến môi trường đã có sẵn trên Vercel)
+            # 1. Khởi tạo Firebase
             if not firebase_admin._apps:
                 firebase_cert_str = os.environ.get('FIREBASE_SERVICE_ACCOUNT')
-                if not firebase_cert_str:
-                    raise Exception("Chưa cài đặt FIREBASE_SERVICE_ACCOUNT")
                 firebase_cert = json.loads(firebase_cert_str)
                 cred = credentials.Certificate(firebase_cert)
                 firebase_admin.initialize_app(cred, {
                     'databaseURL': 'https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/'
                 })
 
-            # 2. Khởi tạo Gemini AI (Sử dụng GEMINI_API_KEY)
+            # 2. Khởi tạo Gemini AI
             gemini_key = os.environ.get('GEMINI_API_KEY')
-            if not gemini_key:
-                raise Exception("Chưa cài đặt GEMINI_API_KEY")
             client = genai.Client(api_key=gemini_key)
 
-            # 3. Lựa chọn chủ đề NGẪU NHIÊN để làm phong phú trang web
+            # 3. NGÂN HÀNG CHỦ ĐỀ SIÊU ĐA DẠNG (AI sẽ bốc ngẫu nhiên mỗi lần chạy)
             topics = [
-                "Công nghệ & Trí tuệ nhân tạo", 
-                "Kinh tế & Thị trường tài chính", 
-                "Khởi nghiệp & Xu hướng kinh doanh", 
-                "Khoa học vũ trụ & Khám phá",
-                "Môi trường & Năng lượng xanh"
+                "Công nghệ lõi & Trí tuệ nhân tạo (AI)", 
+                "Thị trường tài chính & Tiền điện tử (Crypto)", 
+                "Xu hướng kinh doanh & Khởi nghiệp", 
+                "Khoa học vũ trụ & Công nghệ tương lai",
+                "Xe cộ & Phương tiện giao thông điện",
+                "Môi trường & Năng lượng xanh",
+                "Đời sống số & An toàn không gian mạng",
+                "Đột phá Vật lý & Chế tạo kỹ thuật"
             ]
             random_topic = random.choice(topics)
 
-           # 4. Ra lệnh cho Gemini viết báo (Tích hợp cơ chế tự động thử lại)
+            # 4. PROMPT TRAO TOÀN QUYỀN CHO AI TỰ BIÊN TẬP
             prompt = f"""
-            Đóng vai một nhà báo chuyên nghiệp. Hãy viết 1 bản tin điểm tin nhanh (khoảng 150 - 200 chữ) về một sự kiện/thông tin thực tế, nổi bật và thú vị nhất liên quan đến lĩnh vực: {random_topic}.
-            Bạn phải trả về kết quả dưới dạng JSON với cấu trúc chính xác như sau:
+            Bạn là một Tổng biên tập tin tức mẫn cán. Không có ai cung cấp thông tin cho bạn cả, bạn phải TỰ SUY NGHĨ, tự tìm kiếm trong kho dữ liệu khổng lồ của mình để viết ra 1 bản tin NGẮN GỌN, HẤP DẪN về chủ đề: {random_topic}.
+            
+            Quy tắc:
+            - Chọn một sự kiện nổi bật, thực tế hoặc một xu hướng công nghệ mới nhất.
+            - Tiêu đề phải thật "giật tít", khơi gợi trí tò mò.
+            - Nội dung khoảng 150 chữ, trình bày bằng các gạch đầu dòng (-) rõ ràng, sử dụng \\n để xuống dòng.
+            
+            Trả về BẮT BUỘC bằng định dạng JSON chuẩn xác như sau:
             {{
                 "category": "{random_topic}",
-                "title": "Tiêu đề bản tin giật tít, hấp dẫn",
-                "content": "Nội dung tóm tắt chi tiết. Trình bày bằng các gạch đầu dòng (-), sử dụng ký tự \\n để xuống dòng cho dễ nhìn.",
+                "title": "[Tiêu đề giật tít]",
+                "content": "[Nội dung tóm tắt]",
                 "source": "AI Tổng hợp tự động"
             }}
             """
 
+            # 5. Gọi AI với cơ chế Tự động thử lại (Chống lỗi 503 Quá tải)
             max_retries = 3
             response = None
             
             for attempt in range(max_retries):
                 try:
                     response = client.models.generate_content(
-                        model='gemini-3.6-flash',
+                        model='gemini-2.5-flash',
                         contents=prompt,
                         config=types.GenerateContentConfig(
-                            temperature=0.7,
+                            temperature=0.8, # Tăng nhẹ độ sáng tạo
                             response_mime_type="application/json",
                         )
                     )
-                    break  # Nếu thành công, thoát ngay khỏi vòng lặp thử lại
+                    break 
                 except Exception as api_err:
                     if attempt < max_retries - 1:
-                        time.sleep(5)  # Nếu máy chủ quá tải, nghỉ 5 giây rồi gọi lại
+                        time.sleep(5) # Đợi 5 giây nếu Google bị nghẽn mạng
                     else:
-                        raise Exception(f"Máy chủ Google AI đang quá tải sau {max_retries} lần thử: {str(api_err)}")
+                        raise Exception(f"AI đang nghỉ ngơi, thử lại sau: {str(api_err)}")
 
-            # 5. Phân tích kết quả và đẩy lên Firebase nhánh 'news'
+            # 6. Đẩy thẳng lên Firebase, không qua Admin duyệt
             news_data = json.loads(response.text)
             news_data['timestamp'] = int(time.time() * 1000)
             
             db.reference('news').push(news_data)
 
-            # 6. Báo cáo thành công cho cron-job.org
+            # Báo cáo kết quả
             self.send_response(200)
             self.send_header('Content-type', 'text/plain; charset=utf-8')
             self.end_headers()
-            self.wfile.write(f"✅ Đã tự động viết và đăng tin thành công: {news_data['title']}".encode('utf-8'))
+            self.wfile.write(f"✅ AI đã tự nghĩ và viết thành công bài: {news_data['title']}".encode('utf-8'))
 
         except Exception as err:
             self.send_response(500)
