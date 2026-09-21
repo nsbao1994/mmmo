@@ -90,366 +90,104 @@
         </div>
     </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
-    import {
-        getDatabase,
-        ref,
-        onValue,
-        query,
-        orderByChild,
-        limitToLast
-    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
 
-    const firebaseConfig = {
-        databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/"
-    };
+        const firebaseConfig = { databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // ==============================
-    // HÀM ESCAPE HTML
-    // ==============================
-    function escapeHtml(value) {
-        if (value === null || value === undefined) return "";
-
-        return String(value)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
-    // ==============================
-    // 1. TẢI DANH SÁCH TIN TỨC
-    // ==============================
-    const newsRef = query(
-        ref(db, "news"),
-        orderByChild("timestamp")
-    );
-
-    onValue(newsRef, (snapshot) => {
-
-        const container = document.getElementById("news-list");
-
-        if (!snapshot.exists()) {
-            container.innerHTML = `
-                <p style="
-                    text-align:center;
-                    padding:30px;
-                    background:white;
-                    border-radius:8px;
-                ">
-                    Hôm nay chưa có bản tin nào mới.
-                </p>
-            `;
-            return;
-        }
-
-        let newsArray = [];
-
-        snapshot.forEach((child) => {
-            newsArray.push(child.val());
-        });
-
-        // Tin mới nhất lên đầu
-        newsArray.reverse();
-
-        let html = "";
-
-        newsArray.forEach((news) => {
-
-            const date = news.timestamp
-                ? new Date(news.timestamp).toLocaleString("vi-VN")
-                : "";
-
-            // ==============================
-            // NGUỒN TIN
-            // ==============================
-            let sourceLink = "";
-
-            if (news.source) {
-
-                if (String(news.source).startsWith("http")) {
-
-                    sourceLink = `
-                        <div class="news-source">
-                            Nguồn:
-                            <a
-                                href="${escapeHtml(news.source)}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Xem chi tiết &rarr;
-                            </a>
-                        </div>
-                    `;
-
-                } else {
-
-                    sourceLink = `
-                        <div class="news-source">
-                            Nguồn:
-                            <span style="
-                                font-weight:bold;
-                                color:#3498db;
-                            ">
-                                ${escapeHtml(news.source)}
-                            </span>
-                        </div>
-                    `;
-                }
+        // 1. TẢI DANH SÁCH TIN TỨC AI
+        const newsRef = query(ref(db, 'news'), orderByChild('timestamp'));
+        onValue(newsRef, (snapshot) => {
+            const container = document.getElementById('news-list');
+            if (!snapshot.exists()) {
+                container.innerHTML = '<p style="text-align:center; padding: 30px; background:white; border-radius:8px;">Hôm nay chưa có bản tin nào mới.</p>';
+                return;
             }
 
-            // ==============================
-            // HASHTAGS
-            // ==============================
-            let tagsHtml = "";
+            let newsArray = [];
+            snapshot.forEach((child) => { newsArray.push(child.val()); });
+            newsArray.reverse(); 
+            
+            let html = '';
+            newsArray.forEach(news => {
+                const date = new Date(news.timestamp).toLocaleString('vi-VN');
+                
+                // Xử lý link Nguồn
+                let sourceLink = '';
+                if (news.source) {
+                    if (news.source.startsWith('http')) {
+                        sourceLink = `<div class="news-source">Nguồn: <a href="${news.source}" target="_blank">Xem chi tiết &rarr;</a></div>`;
+                    } else {
+                        sourceLink = `<div class="news-source">Nguồn: <span style="font-weight:bold; color: #3498db;">${news.source}</span></div>`;
+                    }
+                }
 
-            if (Array.isArray(news.hashtags)) {
+                // XỬ LÝ HASHTAGS
+                let tagsHtml = '';
+                if (news.hashtags && Array.isArray(news.hashtags)) {
+                    tagsHtml = `<div class="hashtags">` + news.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
+                }
 
-                tagsHtml = `
-                    <div class="hashtags">
-                        ${news.hashtags
-                            .map(tag => `
-                                <span class="tag">
-                                    ${escapeHtml(tag)}
-                                </span>
-                            `)
-                            .join("")}
+                // KHUNG CHIA SẺ (TỐI ƯU MOBILE)
+                const shareUrl = window.location.origin + '/news.html'; 
+                const shareHtml = `
+                    <div class="share-box-news">
+                        <span style="font-size: 0.95em; font-weight: bold; color: #555;">📢 Chia sẻ:</span>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn-news" style="background: #1877f2;">Facebook</a>
+                        <a href="https://zalo.me/share?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn-news" style="background: #0068ff;">Zalo</a>
+                        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết!');" class="share-btn-news" style="background: #6c757d;">📋 Copy Link</button>
                     </div>
                 `;
-            }
-
-            // ==============================
-            // LINK CHIA SẺ
-            // ==============================
-            const shareUrl =
-                window.location.origin +
-                window.location.pathname;
-
-            const encodedShareUrl =
-                encodeURIComponent(shareUrl);
-
-            const shareHtml = `
-                <div class="share-box-news">
-
-                    <span style="
-                        font-size:0.95em;
-                        font-weight:bold;
-                        color:#555;
-                    ">
-                        📢 Chia sẻ:
-                    </span>
-
-                    <a
-                        href="https://www.facebook.com/sharer/sharer.php?u=${encodedShareUrl}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="share-btn-news"
-                        style="background:#1877f2;"
-                    >
-                        Facebook
-                    </a>
-
-                    <a
-                        href="https://zalo.me/share?url=${encodedShareUrl}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="share-btn-news"
-                        style="background:#0068ff;"
-                    >
-                        Zalo
-                    </a>
-
-                    <button
-                        class="share-btn-news copy-link-btn"
-                        data-url="${escapeHtml(shareUrl)}"
-                        style="background:#6c757d;"
-                    >
-                        📋 Copy Link
-                    </button>
-
-                </div>
-            `;
-
-            // ==============================
-            // RENDER TIN
-            // ==============================
-            html += `
-                <div class="news-card">
-
-                    <div class="news-header">
-
-                        <span class="news-category">
-                            ${escapeHtml(
-                                news.category || "Tin nổi bật"
-                            )}
-                        </span>
-
-                        <span class="ai-badge">
-                            ✨ AI Summary
-                        </span>
-
+                
+                // RENDER GIAO DIỆN
+                html += `
+                    <div class="news-card">
+                        <div class="news-header">
+                            <span class="news-category">${news.category || 'Tin nổi bật'}</span>
+                            <span class="ai-badge">✨ AI Summary</span>
+                        </div>
+                        <h2 class="news-title">${news.title}</h2>
+                        <div class="news-content">${news.content}</div>
+                        ${tagsHtml}
+                        <div class="news-footer" style="margin-top: 15px;">
+                            <span>🕒 ${date}</span>
+                            ${sourceLink}
+                        </div>
+                        ${shareHtml}
                     </div>
-
-                    <h2 class="news-title">
-                        ${escapeHtml(news.title || "")}
-                    </h2>
-
-                    <div class="news-content">
-                        ${escapeHtml(news.content || "")}
-                    </div>
-
-                    ${tagsHtml}
-
-                    <div
-                        class="news-footer"
-                        style="margin-top:15px;"
-                    >
-
-                        <span>
-                            🕒 ${escapeHtml(date)}
-                        </span>
-
-                        ${sourceLink}
-
-                    </div>
-
-                    ${shareHtml}
-
-                </div>
-            `;
-        });
-
-        container.innerHTML = html;
-
-        // ==============================
-        // NÚT COPY LINK
-        // ==============================
-        document
-            .querySelectorAll(".copy-link-btn")
-            .forEach((button) => {
-
-                button.addEventListener("click", async () => {
-
-                    const url = button.dataset.url;
-
-                    try {
-
-                        await navigator.clipboard.writeText(url);
-
-                        alert("Đã sao chép liên kết!");
-
-                    } catch (error) {
-
-                        // Fallback cho trình duyệt không hỗ trợ Clipboard API
-                        const textarea =
-                            document.createElement("textarea");
-
-                        textarea.value = url;
-                        document.body.appendChild(textarea);
-
-                        textarea.select();
-                        document.execCommand("copy");
-
-                        textarea.remove();
-
-                        alert("Đã sao chép liên kết!");
-                    }
-                });
+                `;
             });
+            container.innerHTML = html;
+        }); // <--- ĐÃ ĐÓNG ĐÚNG NGOẶC CỦA onValue(newsRef)
 
-    });
-
-
-    // ==============================
-    // 2. TẢI BÀI BLOG SIDEBAR
-    // ==============================
-    const articlesRef = query(
-        ref(db, "articles"),
-        orderByChild("timestamp"),
-        limitToLast(5)
-    );
-
-    onValue(articlesRef, (snapshot) => {
-
-        const sidebar =
-            document.getElementById("sidebar-articles");
-
-        if (!snapshot.exists()) {
-
-            sidebar.innerHTML = `
-                <p style="color:#777;">
-                    Chưa có bài viết đề xuất.
-                </p>
-            `;
-
-            return;
-        }
-
-        let articlesArray = [];
-
-        snapshot.forEach((child) => {
-
-            const data = child.val();
-
-            data.id = child.key;
-
-            articlesArray.push(data);
-        });
-
-        // Mới nhất lên đầu
-        articlesArray.reverse();
-
-        let suggHtml = "";
-
-        articlesArray.forEach((article) => {
-
-            const promptText =
-                article.image_prompt ||
-                article.title ||
-                "news";
-
-            const finalImageUrl =
-                article.custom_img
-                    ? article.custom_img
-                    : `https://image.pollinations.ai/prompt/${encodeURIComponent(
-                        promptText
-                    )}?width=150&height=150&nologo=true`;
-
-            const fallbackImage =
-                `https://picsum.photos/seed/${encodeURIComponent(
-                    article.id
-                )}/150/150`;
-
-            suggHtml += `
-                <a
-                    href="/index.html?id=${encodeURIComponent(article.id)}"
-                    class="sugg-card"
-                >
-
-                    <img
-                        src="${escapeHtml(finalImageUrl)}"
-                        class="sugg-img"
-                        alt="${escapeHtml(article.title || "Bài viết")}"
-                        onerror="this.onerror=null;this.src='${fallbackImage}'"
-                    >
-
-                    <div class="sugg-title">
-                        ${escapeHtml(article.title || "")}
-                    </div>
-
-                </a>
-            `;
-        });
-
-        sidebar.innerHTML = suggHtml;
-
-    });
-
+        // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
+        const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(5));
+        onValue(articlesRef, (snapshot) => {
+            const sidebar = document.getElementById('sidebar-articles');
+            if (!snapshot.exists()) return;
+            
+            let articlesArray = [];
+            snapshot.forEach((child) => { 
+                let data = child.val(); data.id = child.key; articlesArray.push(data); 
+            });
+            articlesArray.reverse();
+            
+            let suggHtml = '';
+            articlesArray.forEach(a => {
+                const promptText = a.image_prompt || a.title || 'news';
+                const finalImageUrl = a.custom_img ? a.custom_img : `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=150&height=150&nologo=true`;
+                suggHtml += `
+                    <a href="/index.html?id=${a.id}" class="sugg-card">
+                        <img src="${finalImageUrl}" class="sugg-img" onerror="this.src='https://picsum.photos/seed/${a.id}/150/150'">
+                        <div class="sugg-title">${a.title}</div>
+                    </a>
+                `;
+            });
+            sidebar.innerHTML = suggHtml;
+        }); // <--- ĐÃ ĐÓNG ĐÚNG NGOẶC CỦA onValue(articlesRef)
 </script>
 </body>
 </html>
