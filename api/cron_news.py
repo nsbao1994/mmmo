@@ -24,28 +24,44 @@ class handler(BaseHTTPRequestHandler):
             gemini_key = os.environ.get('GEMINI_API_KEY')
             client = genai.Client(api_key=gemini_key)
 
-            # 3. NGÂN HÀNG CHỦ ĐỀ SIÊU ĐA DẠNG (AI sẽ bốc ngẫu nhiên mỗi lần chạy)
+            # ==============================================================
+            # TÍNH NĂNG MỚI: TỰ ĐỘNG MÓC LINK AFFILIATE TỪ KHO BÀI VIẾT CŨ
+            # ==============================================================
+            articles_ref = db.reference('articles').get()
+            promo_html = ""
+            
+            if articles_ref:
+                valid_products = []
+                # Lọc ra các bài viết có gắn Tên sản phẩm và Link Shopee
+                for key, val in articles_ref.items():
+                    if isinstance(val, dict) and val.get('shopee_link') and val.get('product_name'):
+                        valid_products.append({
+                            'name': val['product_name'],
+                            'link': val['shopee_link']
+                        })
+                
+                # Bốc ngẫu nhiên 1 sản phẩm để quảng cáo
+                if valid_products:
+                    promo = random.choice(valid_products)
+                    # Thiết kế giao diện HTML khung quảng cáo sẽ dính vào cuối bản tin
+                    promo_html = f"""\n\n<div style="background: #fff3cd; padding: 12px; border-left: 4px solid #ffc107; border-radius: 6px; font-size: 0.95em; margin-top: 15px; display: inline-block; width: 100%; box-sizing: border-box;">🛒 <b>Gợi ý tiện ích:</b> <a href="{promo['link']}" target="_blank" style="color: #ee4d2d; text-decoration: none; font-weight: bold; float: right;">{promo['name']} &rarr;</a></div>"""
+            # ==============================================================
+
+            # 3. Lựa chọn Chủ đề
             topics = [
-                "Công nghệ lõi & Trí tuệ nhân tạo (AI)", 
-                "Thị trường tài chính & Tiền điện tử (Crypto)", 
-                "Xu hướng kinh doanh & Khởi nghiệp", 
-                "Khoa học vũ trụ & Công nghệ tương lai",
-                "Xe cộ & Phương tiện giao thông điện",
-                "Môi trường & Năng lượng xanh",
-                "Đời sống số & An toàn không gian mạng",
-                "Đột phá Vật lý & Chế tạo kỹ thuật"
+                "Công nghệ & Trí tuệ nhân tạo (AI)", 
+                "Thị trường tài chính & Crypto", 
+                "Khởi nghiệp & Xu hướng kinh doanh", 
+                "Khoa học vũ trụ & Chế tạo kỹ thuật",
+                "Đời sống số & Tiện ích gia đình"
             ]
             random_topic = random.choice(topics)
 
-            # 4. PROMPT TRAO TOÀN QUYỀN CHO AI TỰ BIÊN TẬP
+            # 4. Lệnh AI
             prompt = f"""
-            Bạn là một Tổng biên tập tin tức mẫn cán. Không có ai cung cấp thông tin cho bạn cả, bạn phải TỰ SUY NGHĨ, tự tìm kiếm trong kho dữ liệu khổng lồ của mình để viết ra 1 bản tin NGẮN GỌN, HẤP DẪN về chủ đề: {random_topic}.
-            
-            Quy tắc:
-            - Chọn một sự kiện nổi bật, thực tế hoặc một xu hướng công nghệ mới nhất.
-            - Tiêu đề phải thật "giật tít", khơi gợi trí tò mò.
-            - Nội dung khoảng 150 chữ, trình bày bằng các gạch đầu dòng (-) rõ ràng, sử dụng \\n để xuống dòng.
-            
+            Viết 1 bản tin NGẮN GỌN (khoảng 150 chữ) về sự kiện, tin tức hoặc xu hướng mới nhất thuộc lĩnh vực: {random_topic}.
+            - Tiêu đề phải thật "giật tít".
+            - Nội dung trình bày bằng các gạch đầu dòng (-), sử dụng \\n để xuống dòng.
             Trả về BẮT BUỘC bằng định dạng JSON chuẩn xác như sau:
             {{
                 "category": "{random_topic}",
@@ -55,38 +71,39 @@ class handler(BaseHTTPRequestHandler):
             }}
             """
 
-            # 5. Gọi AI với cơ chế Tự động thử lại (Chống lỗi 503 Quá tải)
+            # 5. Gọi AI
             max_retries = 3
             response = None
-            
             for attempt in range(max_retries):
                 try:
                     response = client.models.generate_content(
-                        model='gemini-2.5-flash',
+                        model='gemini-3.6-flash',
                         contents=prompt,
                         config=types.GenerateContentConfig(
-                            temperature=0.8, # Tăng nhẹ độ sáng tạo
+                            temperature=0.8,
                             response_mime_type="application/json",
                         )
                     )
                     break 
                 except Exception as api_err:
                     if attempt < max_retries - 1:
-                        time.sleep(5) # Đợi 5 giây nếu Google bị nghẽn mạng
+                        time.sleep(5)
                     else:
-                        raise Exception(f"AI đang nghỉ ngơi, thử lại sau: {str(api_err)}")
+                        raise Exception(f"Lỗi AI: {str(api_err)}")
 
-            # 6. Đẩy thẳng lên Firebase, không qua Admin duyệt
+            # 6. Gắn quảng cáo vào nội dung & Đẩy lên Firebase
             news_data = json.loads(response.text)
+            
+            # Nối khung quảng cáo HTML vào dưới cùng nội dung AI viết
+            news_data['content'] = news_data.get('content', '') + promo_html
             news_data['timestamp'] = int(time.time() * 1000)
             
             db.reference('news').push(news_data)
 
-            # Báo cáo kết quả
             self.send_response(200)
             self.send_header('Content-type', 'text/plain; charset=utf-8')
             self.end_headers()
-            self.wfile.write(f"✅ AI đã tự nghĩ và viết thành công bài: {news_data['title']}".encode('utf-8'))
+            self.wfile.write(f"✅ Đã viết tin & Gắn link Affiliate thành công: {news_data['title']}".encode('utf-8'))
 
         except Exception as err:
             self.send_response(500)
