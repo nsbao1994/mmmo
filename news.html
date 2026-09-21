@@ -6,7 +6,7 @@
     <title>Điểm Tin Nhanh - AI Tổng Hợp</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" type="image/png">
     <style>
-       :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
+        :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
         
         header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
@@ -28,13 +28,15 @@
         .ai-badge { background: #fdf2e9; color: #d35400; padding: 4px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; display: flex; align-items: center; gap: 5px; border: 1px solid #fad7a1; }
         
         .news-title { font-size: 1.4em; color: #2c3e50; margin: 0 0 15px 0; line-height: 1.4; }
-        .news-content { line-height: 1.7; color: #444; font-size: 1.05em; margin-bottom: 15px; white-space: pre-wrap; word-wrap: break-word; }
+        .news-title a { color: inherit; text-decoration: none; transition: 0.2s; }
+        .news-title a:hover { color: #3498db; }
         
+        .news-content { line-height: 1.7; color: #444; font-size: 1.05em; margin-bottom: 15px; white-space: pre-wrap; word-wrap: break-word; }
         .news-footer { border-top: 1px dashed #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: #777; flex-wrap: wrap; gap: 10px; }
         .news-source a { color: #3498db; text-decoration: none; font-weight: bold; }
         .news-source a:hover { text-decoration: underline; }
 
-        /* Sidebar Đề xuất */
+        /* Khung Sidebar */
         .sidebar { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: sticky; top: 20px; }
         .sidebar-title { font-size: 1.25em; color: var(--accent-color); border-bottom: 2px dashed #eee; padding-bottom: 12px; margin-top: 0; margin-bottom: 20px; }
         .suggested-articles { display: flex; flex-direction: column; gap: 18px; }
@@ -43,44 +45,37 @@
         .sugg-img { width: 85px; height: 65px; border-radius: 6px; object-fit: cover; background: #eee; flex-shrink: 0; }
         .sugg-title { font-size: 1em; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-        /* CSS Hashtags */
+        /* Tags & Nút Chia sẻ */
         .hashtags { margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap; }
         .tag { background: #f1f3f5; color: #495057; padding: 4px 10px; border-radius: 4px; font-size: 0.85em; font-weight: 600; border: 1px solid #e2e6ea; }
-        
-        /* CSS Nút chia sẻ */
         .share-box-news { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
         .share-btn-news { padding: 8px 16px; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9em; font-weight: bold; display: inline-flex; justify-content: center; align-items: center; border: none; cursor: pointer; transition: 0.2s; }
         .share-btn-news:hover { opacity: 0.85; }
 
-        /* TỐI ƯU CẤU TRÚC MOBILE */
-        @media (max-width: 800px) { 
-            .page-layout { grid-template-columns: 1fr; } 
-        }
-        
+        /* Nút Phân Trang */
+        .pagination-container { text-align: center; margin-top: 20px; padding: 20px 0; display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+        .pag-btn { padding: 8px 16px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 6px; font-weight: bold; color: #555; transition: 0.2s; }
+        .pag-btn:hover { background: #f0f0f0; }
+        .pag-btn.active { background: #3498db; color: white; border-color: #3498db; }
+        .back-btn { display: inline-block; background: #e9ecef; color: #495057; padding: 8px 16px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-bottom: 20px; transition: 0.2s; }
+        .back-btn:hover { background: #dde2e6; }
+
+        /* Tối ưu Mobile */
+        @media (max-width: 800px) { .page-layout { grid-template-columns: 1fr; } }
         @media (max-width: 600px) {
             body { padding: 8px; }
             header { padding: 20px 10px; margin-bottom: 20px; border-radius: 8px; }
             h1 { font-size: 1.6em; }
-            .slogan { font-size: 0.95em; }
-            
-            /* Tinh chỉnh Menu: Chia tỷ lệ đều, bo góc gọn gàng */
-            .nav-menu { gap: 8px; margin-bottom: 20px; }
+            .nav-menu { gap: 8px; }
             .nav-menu a { flex: 1 1 40%; padding: 10px 5px; font-size: 0.85em; }
-
-            /* Tinh chỉnh thẻ Tin tức: Giảm lề thừa để nới rộng nội dung chữ */
             .news-card { padding: 15px; border-radius: 8px; border-left-width: 4px; }
-            .news-title { font-size: 1.25em; margin-bottom: 10px; }
-            .news-content { font-size: 1em; }
+            .news-footer, .share-box-news { flex-direction: column; align-items: stretch; text-align: center; }
+            .share-btn-news { width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 5px; }
             
-            /* Khung Hashtag và Footer */
-            .news-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
-            
-            /* Tinh chỉnh Nút chia sẻ: Căn giữa, mở rộng chiều ngang dễ bấm */
-            .share-box-news { flex-direction: column; align-items: stretch; border-top: 2px dashed #eee; margin-top: 20px; padding-top: 20px; }
-            .share-box-news > span { text-align: center; margin-bottom: 5px; font-size: 1em !important; }
-            .share-btn-news { width: 100%; box-sizing: border-box; padding: 12px; font-size: 1em; margin-bottom: 5px; }
-
-            .sidebar { padding: 15px; }
+            /* Sửa khung Shopee (do Python tạo) trên Mobile */
+            .shopee-box { flex-direction: column !important; text-align: center; gap: 15px !important; }
+            .shopee-box-img { width: 100% !important; height: auto !important; max-width: 200px; margin: 0 auto; }
+            .shopee-box-btn { display: block !important; width: 100%; }
         }
     </style>
 </head>
@@ -92,17 +87,20 @@
 
     <div class="nav-menu">
         <a href="index.html">📖 Đọc Blog Mẹo Vặt</a>
-        <a href="jobs.html">💼 Việc Làm</a>
+        <a href="jobs.html">💼 Việc Làm Kỹ Thuật</a>
         <a href="news.html" class="active">📰 Điểm Tin AI</a>
     </div>
 
     <div class="page-layout">
         <!-- Khối chứa tin tức -->
-        <div id="news-list" class="news-container">
-            <p style="text-align: center; color: #666;">⏳ AI đang tổng hợp tin tức...</p>
+        <div id="main-content">
+            <div id="news-list" class="news-container">
+                <p style="text-align: center; color: #666;">⏳ AI đang tổng hợp tin tức...</p>
+            </div>
+            <div class="pagination-container" id="pagination-box"></div>
         </div>
         
-        <!-- Khối chéo: Đề xuất bài viết Blog để chốt Affiliate -->
+        <!-- Khối Sidebar -->
         <div class="sidebar">
             <h3 class="sidebar-title">🔥 Khám phá Mẹo hay</h3>
             <div id="sidebar-articles" class="suggested-articles"></div>
@@ -117,6 +115,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        // Các biến phân trang
+        let globalNewsArray = [];
+        let currentPage = 1;
+        const itemsPerPage = 10; // Hiện 10 bản tin 1 trang
+
         // 1. TẢI DANH SÁCH TIN TỨC AI
         const newsRef = query(ref(db, 'news'), orderByChild('timestamp'));
         onValue(newsRef, (snapshot) => {
@@ -127,62 +130,111 @@
             }
 
             let newsArray = [];
-            snapshot.forEach((child) => { newsArray.push(child.val()); });
+            snapshot.forEach((child) => { 
+                let data = child.val();
+                data.id = child.key; // Gắn ID cho Bài viết để Share
+                newsArray.push(data); 
+            });
             newsArray.reverse(); 
+            globalNewsArray = newsArray;
+
+            // Kiểm tra xem khách có đang bấm vào link Share 1 bài cụ thể không
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetId = urlParams.get('id');
+
+            if (targetId) {
+                // HỢP LỆ: KIẾM BÀI VIẾT VÀ CHỈ HIỂN THỊ ĐÚNG BÀI ĐÓ
+                const specificNews = newsArray.find(n => n.id === targetId);
+                if (specificNews) {
+                    document.getElementById('pagination-box').style.display = 'none'; // Giấu phân trang
+                    container.innerHTML = `<a href="news.html" class="back-btn">&larr; Xem tất cả bản tin</a>` + renderNewsCard(specificNews);
+                } else {
+                    container.innerHTML = `<p style="text-align:center; color:red;">Bản tin này không tồn tại.</p><a href="news.html">Quay lại</a>`;
+                }
+            } else {
+                // TRANG CHỦ: HIỂN THỊ PHÂN TRANG
+                renderPaginatedNews();
+            }
+        });
+
+        // Hàm render giao diện phân trang
+        window.changePage = function(page) {
+            currentPage = page;
+            renderPaginatedNews();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderPaginatedNews() {
+            const container = document.getElementById('news-list');
+            const pagBox = document.getElementById('pagination-box');
             
+            const totalPages = Math.ceil(globalNewsArray.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const paginatedItems = globalNewsArray.slice(startIndex, startIndex + itemsPerPage);
+
             let html = '';
-            newsArray.forEach(news => {
-                const date = new Date(news.timestamp).toLocaleString('vi-VN');
+            paginatedItems.forEach(news => {
+                html += renderNewsCard(news);
+            });
+            container.innerHTML = html;
+
+            // Render nút bấm phân trang
+            if (totalPages > 1) {
+                let pagHtml = '';
+                if (currentPage > 1) pagHtml += `<button class="pag-btn" onclick="changePage(${currentPage - 1})">« Trước</button>`;
                 
-                // Xử lý link Nguồn
-                let sourceLink = '';
-                if (news.source) {
-                    if (news.source.startsWith('http')) {
-                        sourceLink = `<div class="news-source">Nguồn: <a href="${news.source}" target="_blank">Xem chi tiết &rarr;</a></div>`;
-                    } else {
-                        sourceLink = `<div class="news-source">Nguồn: <span style="font-weight:bold; color: #3498db;">${news.source}</span></div>`;
-                    }
+                for (let i = 1; i <= totalPages; i++) {
+                    if (i === currentPage) pagHtml += `<button class="pag-btn active">${i}</button>`;
+                    else pagHtml += `<button class="pag-btn" onclick="changePage(${i})">${i}</button>`;
                 }
+                
+                if (currentPage < totalPages) pagHtml += `<button class="pag-btn" onclick="changePage(${currentPage + 1})">Sau »</button>`;
+                pagBox.innerHTML = pagHtml;
+            } else {
+                pagBox.innerHTML = '';
+            }
+        }
 
-                // XỬ LÝ HASHTAGS
-                let tagsHtml = '';
-                if (news.hashtags && Array.isArray(news.hashtags)) {
-                    tagsHtml = `<div class="hashtags">` + news.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
-                }
+        // Hàm tạo 1 thẻ HTML Tin tức hoàn chỉnh
+        function renderNewsCard(news) {
+            const date = new Date(news.timestamp).toLocaleString('vi-VN');
+            const shareUrl = window.location.origin + '/news.html?id=' + news.id; 
+            
+            let sourceLink = '';
+            if (news.source) {
+                if (news.source.startsWith('http')) sourceLink = `<div class="news-source">Nguồn: <a href="${news.source}" target="_blank">Xem chi tiết &rarr;</a></div>`;
+                else sourceLink = `<div class="news-source">Nguồn: <span style="font-weight:bold; color: #3498db;">${news.source}</span></div>`;
+            }
 
-                // KHUNG CHIA SẺ (TỐI ƯU MOBILE)
-                const shareUrl = window.location.origin + '/news.html'; 
-                const shareHtml = `
+            let tagsHtml = '';
+            if (news.hashtags && Array.isArray(news.hashtags)) {
+                tagsHtml = `<div class="hashtags">` + news.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
+            }
+
+            return `
+                <div class="news-card">
+                    <div class="news-header">
+                        <span class="news-category">${news.category || 'Tin nổi bật'}</span>
+                        <span class="ai-badge">✨ AI Summary</span>
+                    </div>
+                    <h2 class="news-title"><a href="?id=${news.id}">${news.title}</a></h2>
+                    <div class="news-content">${news.content}</div>
+                    ${tagsHtml}
+                    <div class="news-footer">
+                        <span>🕒 ${date}</span>
+                        ${sourceLink}
+                    </div>
                     <div class="share-box-news">
                         <span style="font-size: 0.95em; font-weight: bold; color: #555;">📢 Chia sẻ:</span>
                         <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn-news" style="background: #1877f2;">Facebook</a>
                         <a href="https://zalo.me/share?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn-news" style="background: #0068ff;">Zalo</a>
                         <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết!');" class="share-btn-news" style="background: #6c757d;">📋 Copy Link</button>
                     </div>
-                `;
-                
-                // RENDER GIAO DIỆN
-                html += `
-                    <div class="news-card">
-                        <div class="news-header">
-                            <span class="news-category">${news.category || 'Tin nổi bật'}</span>
-                            <span class="ai-badge">✨ AI Summary</span>
-                        </div>
-                        <h2 class="news-title">${news.title}</h2>
-                        <div class="news-content">${news.content}</div>
-                        ${tagsHtml}
-                        <div class="news-footer" style="margin-top: 15px;">
-                            <span>🕒 ${date}</span>
-                            ${sourceLink}
-                        </div>
-                        ${shareHtml}
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }); 
+                </div>
+            `;
+        }
 
-        // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
+        // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR
         const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(5));
         onValue(articlesRef, (snapshot) => {
             const sidebar = document.getElementById('sidebar-articles');
@@ -206,7 +258,7 @@
                 `;
             });
             sidebar.innerHTML = suggHtml;
-        }); 
-</script>
+        });
+    </script>
 </body>
 </html>
