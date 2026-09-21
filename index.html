@@ -23,6 +23,7 @@
             color: white; cursor: pointer; padding: 12px 16px; border-radius: 50%;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s;
         }
+        
         #backToTopBtn:hover { background-color: #d73d22; transform: translateY(-4px); }
         :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
@@ -30,7 +31,10 @@
         header { background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; padding: 40px 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h1 { margin: 0 0 10px 0; font-size: 2.2em; cursor: pointer; letter-spacing: 0.5px; }
         .slogan { font-size: 1.1em; opacity: 0.9; }
-
+.nav-menu { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .nav-menu a { padding: 10px 20px; background: white; border: 1px solid #ddd; border-radius: 20px; text-decoration: none; color: #555; font-weight: bold; transition: 0.3s; }
+        .nav-menu a:hover { background: #f0f0f0; }
+        .nav-menu a.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
         .menu-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 35px; flex-wrap: wrap; }
         .menu-btn { background: white; border: 1px solid #ddd; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: 600; color: #555; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .menu-btn:hover, .menu-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); transform: translateY(-2px); }
@@ -137,7 +141,7 @@
     </div>
     <div class="menu-container" id="menu-bar" style="display: none;">
         <button class="menu-btn active" onclick="filterCategory('All', this)">Tất cả bài viết</button>
-       
+       <a href="news.html">📰 Điểm Tin AI</a>
 
     </div>
     
