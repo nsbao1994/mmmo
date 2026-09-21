@@ -6,7 +6,7 @@
     <title>Điểm Tin Nhanh - AI Tổng Hợp</title>
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" type="image/png">
     <style>
-        :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
+       :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
         
         header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
@@ -14,7 +14,7 @@
         .slogan { font-size: 1.05em; opacity: 0.9; }
 
         .nav-menu { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
-        .nav-menu a { padding: 10px 20px; background: white; border: 1px solid #ddd; border-radius: 20px; text-decoration: none; color: #555; font-weight: bold; transition: 0.3s; }
+        .nav-menu a { padding: 10px 20px; background: white; border: 1px solid #ddd; border-radius: 20px; text-decoration: none; color: #555; font-weight: bold; transition: 0.3s; text-align: center; }
         .nav-menu a:hover { background: #f0f0f0; }
         .nav-menu a.active { background: #2c3e50; color: white; border-color: #2c3e50; }
 
@@ -23,14 +23,14 @@
         .news-container { display: flex; flex-direction: column; gap: 20px; }
         .news-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #3498db; }
         
-        .news-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .news-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .news-category { background: #e3f2fd; color: #0066cc; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
         .ai-badge { background: #fdf2e9; color: #d35400; padding: 4px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; display: flex; align-items: center; gap: 5px; border: 1px solid #fad7a1; }
         
         .news-title { font-size: 1.4em; color: #2c3e50; margin: 0 0 15px 0; line-height: 1.4; }
-        .news-content { line-height: 1.7; color: #444; font-size: 1.05em; margin-bottom: 15px; white-space: pre-wrap; }
+        .news-content { line-height: 1.7; color: #444; font-size: 1.05em; margin-bottom: 15px; white-space: pre-wrap; word-wrap: break-word; }
         
-        .news-footer { border-top: 1px dashed #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: #777; }
+        .news-footer { border-top: 1px dashed #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: #777; flex-wrap: wrap; gap: 10px; }
         .news-source a { color: #3498db; text-decoration: none; font-weight: bold; }
         .news-source a:hover { text-decoration: underline; }
 
@@ -52,16 +52,35 @@
         .share-btn-news { padding: 8px 16px; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9em; font-weight: bold; display: inline-flex; justify-content: center; align-items: center; border: none; cursor: pointer; transition: 0.2s; }
         .share-btn-news:hover { opacity: 0.85; }
 
-        /* Tối ưu riêng cho Điện thoại Mobile */
+        /* TỐI ƯU CẤU TRÚC MOBILE */
         @media (max-width: 800px) { 
             .page-layout { grid-template-columns: 1fr; } 
         }
+        
         @media (max-width: 600px) {
-            body { padding: 10px; }
-            .news-card { padding: 15px; }
-            .share-box-news { flex-direction: column; align-items: stretch; text-align: center; }
-            .share-box-news > span { margin-bottom: 5px; }
-            .share-btn-news { width: 100%; box-sizing: border-box; padding: 12px; }
+            body { padding: 8px; }
+            header { padding: 20px 10px; margin-bottom: 20px; border-radius: 8px; }
+            h1 { font-size: 1.6em; }
+            .slogan { font-size: 0.95em; }
+            
+            /* Tinh chỉnh Menu: Chia tỷ lệ đều, bo góc gọn gàng */
+            .nav-menu { gap: 8px; margin-bottom: 20px; }
+            .nav-menu a { flex: 1 1 40%; padding: 10px 5px; font-size: 0.85em; }
+
+            /* Tinh chỉnh thẻ Tin tức: Giảm lề thừa để nới rộng nội dung chữ */
+            .news-card { padding: 15px; border-radius: 8px; border-left-width: 4px; }
+            .news-title { font-size: 1.25em; margin-bottom: 10px; }
+            .news-content { font-size: 1em; }
+            
+            /* Khung Hashtag và Footer */
+            .news-footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+            
+            /* Tinh chỉnh Nút chia sẻ: Căn giữa, mở rộng chiều ngang dễ bấm */
+            .share-box-news { flex-direction: column; align-items: stretch; border-top: 2px dashed #eee; margin-top: 20px; padding-top: 20px; }
+            .share-box-news > span { text-align: center; margin-bottom: 5px; font-size: 1em !important; }
+            .share-btn-news { width: 100%; box-sizing: border-box; padding: 12px; font-size: 1em; margin-bottom: 5px; }
+
+            .sidebar { padding: 15px; }
         }
     </style>
 </head>
