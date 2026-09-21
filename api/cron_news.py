@@ -38,7 +38,7 @@ class handler(BaseHTTPRequestHandler):
             ]
             random_topic = random.choice(topics)
 
-            # 4. Ra lệnh cho Gemini viết báo (Ép buộc trả về JSON)
+           # 4. Ra lệnh cho Gemini viết báo (Tích hợp cơ chế tự động thử lại)
             prompt = f"""
             Đóng vai một nhà báo chuyên nghiệp. Hãy viết 1 bản tin điểm tin nhanh (khoảng 150 - 200 chữ) về một sự kiện/thông tin thực tế, nổi bật và thú vị nhất liên quan đến lĩnh vực: {random_topic}.
             Bạn phải trả về kết quả dưới dạng JSON với cấu trúc chính xác như sau:
@@ -50,14 +50,25 @@ class handler(BaseHTTPRequestHandler):
             }}
             """
 
-            response = client.models.generate_content(
-                model='gemini-3.6-flash',
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.7,
-                    response_mime_type="application/json", # Ép Gemini trả về JSON chuẩn
-                )
-            )
+            max_retries = 3
+            response = None
+            
+            for attempt in range(max_retries):
+                try:
+                    response = client.models.generate_content(
+                        model='gemini-2.5-flash',
+                        contents=prompt,
+                        config=types.GenerateContentConfig(
+                            temperature=0.7,
+                            response_mime_type="application/json",
+                        )
+                    )
+                    break  # Nếu thành công, thoát ngay khỏi vòng lặp thử lại
+                except Exception as api_err:
+                    if attempt < max_retries - 1:
+                        time.sleep(5)  # Nếu máy chủ quá tải, nghỉ 5 giây rồi gọi lại
+                    else:
+                        raise Exception(f"Máy chủ Google AI đang quá tải sau {max_retries} lần thử: {str(api_err)}")
 
             # 5. Phân tích kết quả và đẩy lên Firebase nhánh 'news'
             news_data = json.loads(response.text)
