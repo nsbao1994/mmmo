@@ -161,7 +161,7 @@
                 `;
             });
             container.innerHTML = html;
-
+}); // <--- THÊM DẤU NÀY ĐỂ ĐÓNG KHỐI onValue(newsRef, ...)
        // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
         const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(5));
         onValue(articlesRef, (snapshot) => {
