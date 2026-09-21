@@ -43,7 +43,26 @@
         .sugg-img { width: 85px; height: 65px; border-radius: 6px; object-fit: cover; background: #eee; flex-shrink: 0; }
         .sugg-title { font-size: 1em; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-        @media (max-width: 800px) { .page-layout { grid-template-columns: 1fr; } }
+        /* CSS Hashtags */
+        .hashtags { margin-top: 15px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { background: #f1f3f5; color: #495057; padding: 4px 10px; border-radius: 4px; font-size: 0.85em; font-weight: 600; border: 1px solid #e2e6ea; }
+        
+        /* CSS Nút chia sẻ */
+        .share-box-news { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .share-btn-news { padding: 8px 16px; border-radius: 6px; color: white; text-decoration: none; font-size: 0.9em; font-weight: bold; display: inline-flex; justify-content: center; align-items: center; border: none; cursor: pointer; transition: 0.2s; }
+        .share-btn-news:hover { opacity: 0.85; }
+
+        /* Tối ưu riêng cho Điện thoại Mobile */
+        @media (max-width: 800px) { 
+            .page-layout { grid-template-columns: 1fr; } 
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .news-card { padding: 15px; }
+            .share-box-news { flex-direction: column; align-items: stretch; text-align: center; }
+            .share-box-news > span { margin-bottom: 5px; }
+            .share-btn-news { width: 100%; box-sizing: border-box; padding: 12px; }
+        }
     </style>
 </head>
 <body>
@@ -96,7 +115,7 @@
             newsArray.forEach(news => {
                 const date = new Date(news.timestamp).toLocaleString('vi-VN');
                 
-                // 1. Xử lý link Nguồn thông minh
+                // Xử lý link Nguồn
                 let sourceLink = '';
                 if (news.source) {
                     if (news.source.startsWith('http')) {
@@ -106,19 +125,24 @@
                     }
                 }
 
-                // 2. TẠO HTML CHO NÚT CHIA SẺ
-                // Ở đây ta dùng URL trang chủ tin tức để chia sẻ
+                // XỬ LÝ HASHTAGS
+                let tagsHtml = '';
+                if (news.hashtags && Array.isArray(news.hashtags)) {
+                    tagsHtml = `<div class="hashtags">` + news.hashtags.map(tag => `<span class="tag">${tag}</span>`).join('') + `</div>`;
+                }
+
+                // KHUNG CHIA SẺ (TỐI ƯU MOBILE)
                 const shareUrl = window.location.origin + '/news.html'; 
                 const shareHtml = `
-                    <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #eee; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
-                        <span style="font-size: 0.9em; font-weight: bold; color: #555;">📢 Chia sẻ:</span>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" style="background: #1877f2; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; text-decoration: none; font-weight: bold; display: inline-block;">Facebook</a>
-                        <a href="https://zalo.me/share?url=${encodeURIComponent(shareUrl)}" target="_blank" style="background: #0068ff; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; text-decoration: none; font-weight: bold; display: inline-block;">Zalo</a>
-                        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết!');" style="background: #6c757d; color: white; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; text-decoration: none; font-weight: bold; border: none; cursor: pointer;">📋 Copy Link</button>
+                    <div class="share-box-news">
+                        <span style="font-size: 0.95em; font-weight: bold; color: #555;">📢 Chia sẻ:</span>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn-news" style="background: #1877f2;">Facebook</a>
+                        <a href="https://zalo.me/share?url=${encodeURIComponent(shareUrl)}" target="_blank" class="share-btn-news" style="background: #0068ff;">Zalo</a>
+                        <button onclick="navigator.clipboard.writeText('${shareUrl}'); alert('Đã sao chép liên kết!');" class="share-btn-news" style="background: #6c757d;">📋 Copy Link</button>
                     </div>
                 `;
                 
-                // 3. Render toàn bộ Thẻ tin tức
+                // RENDER GIAO DIỆN
                 html += `
                     <div class="news-card">
                         <div class="news-header">
@@ -127,7 +151,8 @@
                         </div>
                         <h2 class="news-title">${news.title}</h2>
                         <div class="news-content">${news.content}</div>
-                        <div class="news-footer">
+                        ${tagsHtml} <!-- Chèn hashtag vào dưới nội dung -->
+                        <div class="news-footer" style="margin-top: 15px;">
                             <span>🕒 ${date}</span>
                             ${sourceLink}
                         </div>
