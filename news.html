@@ -34,7 +34,7 @@
         .news-source a { color: #3498db; text-decoration: none; font-weight: bold; }
         .news-source a:hover { text-decoration: underline; }
 
-        /* Sidebar Đề xuất (Giữ nguyên như các trang khác) */
+        /* Sidebar Đề xuất */
         .sidebar { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: sticky; top: 20px; }
         .sidebar-title { font-size: 1.25em; color: var(--accent-color); border-bottom: 2px dashed #eee; padding-bottom: 12px; margin-top: 0; margin-bottom: 20px; }
         .suggested-articles { display: flex; flex-direction: column; gap: 18px; }
@@ -73,7 +73,7 @@
 
     <div class="nav-menu">
         <a href="index.html">📖 Đọc Blog Mẹo Vặt</a>
-        <a href="jobs.html">💼 Việc Làm Kỹ Thuật</a>
+        <a href="jobs.html">💼 Việc Làm</a>
         <a href="news.html" class="active">📰 Điểm Tin AI</a>
     </div>
 
@@ -151,7 +151,7 @@
                         </div>
                         <h2 class="news-title">${news.title}</h2>
                         <div class="news-content">${news.content}</div>
-                        ${tagsHtml} <!-- Chèn hashtag vào dưới nội dung -->
+                        ${tagsHtml}
                         <div class="news-footer" style="margin-top: 15px;">
                             <span>🕒 ${date}</span>
                             ${sourceLink}
@@ -161,8 +161,9 @@
                 `;
             });
             container.innerHTML = html;
-}); // <--- THÊM DẤU NÀY ĐỂ ĐÓNG KHỐI onValue(newsRef, ...)
-       // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
+        }); // <--- ĐÃ ĐÓNG ĐÚNG NGOẶC CỦA onValue(newsRef)
+
+        // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
         const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(5));
         onValue(articlesRef, (snapshot) => {
             const sidebar = document.getElementById('sidebar-articles');
@@ -186,7 +187,7 @@
                 `;
             });
             sidebar.innerHTML = suggHtml;
-        }); // <-- DẤU ĐÓNG NÀY ( ) CỦA onValue RẤT HAY BỊ THIẾU
+        }); // <--- ĐÃ ĐÓNG ĐÚNG NGOẶC CỦA onValue(articlesRef)
     </script>
 </body>
 </html>
