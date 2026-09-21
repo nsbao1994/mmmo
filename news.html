@@ -59,10 +59,15 @@
         .pag-btn.active { background: #3498db; color: white; border-color: #3498db; }
         .back-btn { display: inline-block; background: #e9ecef; color: #495057; padding: 8px 16px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-bottom: 20px; transition: 0.2s; }
         .back-btn:hover { background: #dde2e6; }
-
+/* Kháng lỗi khoảng trắng khổng lồ cho khung Shopee */
+        .shopee-box, .shopee-box * {
+            white-space: normal !important;
+            line-height: 1.5 !important;
+        }
         /* Tối ưu Mobile */
         @media (max-width: 800px) { .page-layout { grid-template-columns: 1fr; } }
-        @media (max-width: 600px) {
+       @media (max-width: 600px) {
+            /* Các thuộc tính mobile cũ của bạn giữ nguyên... */
             body { padding: 8px; }
             header { padding: 20px 10px; margin-bottom: 20px; border-radius: 8px; }
             h1 { font-size: 1.6em; }
@@ -72,10 +77,11 @@
             .news-footer, .share-box-news { flex-direction: column; align-items: stretch; text-align: center; }
             .share-btn-news { width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 5px; }
             
-            /* Sửa khung Shopee (do Python tạo) trên Mobile */
-            .shopee-box { flex-direction: column !important; text-align: center; gap: 15px !important; }
-            .shopee-box-img { width: 100% !important; height: auto !important; max-width: 200px; margin: 0 auto; }
-            .shopee-box-btn { display: block !important; width: 100%; }
+            /* TỐI ƯU KHUNG SHOPEE MOBILE (MỚI) */
+            .shopee-box { flex-direction: column !important; text-align: center !important; gap: 15px !important; padding: 15px !important; }
+            .shopee-box-img { width: 100% !important; height: auto !important; max-width: 180px; margin: 0 auto; }
+            .shopee-box-info { width: 100% !important; text-align: center !important; }
+            .shopee-box-btn { display: block !important; width: 100%; box-sizing: border-box; margin-top: 10px; }
         }
     </style>
 </head>
