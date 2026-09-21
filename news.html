@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điểm Tin Nhanh - AI Tổng Hợp</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" type="image/png">
+    <style>
+        :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
+        
+        header { background: linear-gradient(135deg, #2c3e50, #3498db); color: white; padding: 30px 20px; border-radius: 12px; text-align: center; margin-bottom: 30px; }
+        h1 { margin: 0 0 10px 0; font-size: 2em; cursor: pointer; }
+        .slogan { font-size: 1.05em; opacity: 0.9; }
+
+        .nav-menu { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .nav-menu a { padding: 10px 20px; background: white; border: 1px solid #ddd; border-radius: 20px; text-decoration: none; color: #555; font-weight: bold; transition: 0.3s; }
+        .nav-menu a:hover { background: #f0f0f0; }
+        .nav-menu a.active { background: #2c3e50; color: white; border-color: #2c3e50; }
+
+        .page-layout { display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; align-items: start; }
+        
+        .news-container { display: flex; flex-direction: column; gap: 20px; }
+        .news-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #3498db; }
+        
+        .news-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .news-category { background: #e3f2fd; color: #0066cc; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+        .ai-badge { background: #fdf2e9; color: #d35400; padding: 4px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; display: flex; align-items: center; gap: 5px; border: 1px solid #fad7a1; }
+        
+        .news-title { font-size: 1.4em; color: #2c3e50; margin: 0 0 15px 0; line-height: 1.4; }
+        .news-content { line-height: 1.7; color: #444; font-size: 1.05em; margin-bottom: 15px; white-space: pre-wrap; }
+        
+        .news-footer { border-top: 1px dashed #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: #777; }
+        .news-source a { color: #3498db; text-decoration: none; font-weight: bold; }
+        .news-source a:hover { text-decoration: underline; }
+
+        /* Sidebar Đề xuất (Giữ nguyên như các trang khác) */
+        .sidebar { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: sticky; top: 20px; }
+        .sidebar-title { font-size: 1.25em; color: var(--accent-color); border-bottom: 2px dashed #eee; padding-bottom: 12px; margin-top: 0; margin-bottom: 20px; }
+        .suggested-articles { display: flex; flex-direction: column; gap: 18px; }
+        .sugg-card { display: flex; gap: 12px; text-decoration: none; color: #333; align-items: center; transition: 0.2s; }
+        .sugg-card:hover { transform: translateX(5px); color: var(--primary-color); }
+        .sugg-img { width: 85px; height: 65px; border-radius: 6px; object-fit: cover; background: #eee; flex-shrink: 0; }
+        .sugg-title { font-size: 1em; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        @media (max-width: 800px) { .page-layout { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 onclick="window.location.href='index.html'">⚡ DIY Việt Nam</h1>
+        <div class="slogan">Điểm Tin Tức - Được Tóm Tắt Tự Động Bởi AI</div>
+    </header>
+
+    <div class="nav-menu">
+        <a href="index.html">📖 Đọc Blog Mẹo Vặt</a>
+        <a href="jobs.html">💼 Việc Làm Kỹ Thuật</a>
+        <a href="news.html" class="active">📰 Điểm Tin AI</a>
+    </div>
+
+    <div class="page-layout">
+        <!-- Khối chứa tin tức -->
+        <div id="news-list" class="news-container">
+            <p style="text-align: center; color: #666;">⏳ AI đang tổng hợp tin tức...</p>
+        </div>
+        
+        <!-- Khối chéo: Đề xuất bài viết Blog để chốt Affiliate -->
+        <div class="sidebar">
+            <h3 class="sidebar-title">🔥 Khám phá Mẹo hay</h3>
+            <div id="sidebar-articles" class="suggested-articles"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+
+        const firebaseConfig = { databaseURL: "https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/" };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // 1. TẢI DANH SÁCH TIN TỨC AI
+        const newsRef = query(ref(db, 'news'), orderByChild('timestamp'));
+        onValue(newsRef, (snapshot) => {
+            const container = document.getElementById('news-list');
+            if (!snapshot.exists()) {
+                container.innerHTML = '<p style="text-align:center; padding: 30px; background:white; border-radius:8px;">Hôm nay chưa có bản tin nào mới.</p>';
+                return;
+            }
+
+            let newsArray = [];
+            snapshot.forEach((child) => { newsArray.push(child.val()); });
+            newsArray.reverse(); 
+            
+            let html = '';
+            newsArray.forEach(news => {
+                const date = new Date(news.timestamp).toLocaleString('vi-VN');
+                const sourceLink = news.source ? `<div class="news-source">Nguồn: <a href="${news.source}" target="_blank">Xem chi tiết &rarr;</a></div>` : '';
+                
+                html += `
+                    <div class="news-card">
+                        <div class="news-header">
+                            <span class="news-category">${news.category || 'Tin nổi bật'}</span>
+                            <span class="ai-badge">✨ AI Summary</span>
+                        </div>
+                        <h2 class="news-title">${news.title}</h2>
+                        <div class="news-content">${news.content}</div>
+                        <div class="news-footer">
+                            <span>🕒 ${date}</span>
+                            ${sourceLink}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        });
+
+        // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
+        const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(5));
+        onValue(articlesRef, (snapshot) => {
+            const sidebar = document.getElementById('sidebar-articles');
+            if (!snapshot.exists()) return;
+            
+            let articlesArray = [];
+            snapshot.forEach((child) => { 
+                let data = child.val(); data.id = child.key; articlesArray.push(data); 
+            });
+            articlesArray.reverse();
+            
+            let suggHtml = '';
+            articlesArray.forEach(a => {
+                const promptText = a.image_prompt || a.title || 'news';
+                const finalImageUrl = a.custom_img ? a.custom_img : `https://image.pollinations.ai/prompt/${encodeURIComponent(promptText)}?width=150&height=150&nologo=true`;
+                suggHtml += `
+                    <a href="/index.html?id=${a.id}" class="sugg-card">
+                        <img src="${finalImageUrl}" class="sugg-img" onerror="this.src='https://picsum.photos/seed/${a.id}/150/150'">
+                        <div class="sugg-title">${a.title}</div>
+                    </a>
+                `;
+            });
+            sidebar.innerHTML = suggHtml;
+        });
+    </script>
+</body>
+</html>
