@@ -162,7 +162,7 @@
             });
             container.innerHTML = html;
 
-        // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
+       // 2. TẢI BÀI VIẾT BLOG VÀO SIDEBAR ĐỂ KÉO TRAFFIC
         const articlesRef = query(ref(db, 'articles'), orderByChild('timestamp'), limitToLast(5));
         onValue(articlesRef, (snapshot) => {
             const sidebar = document.getElementById('sidebar-articles');
@@ -186,7 +186,7 @@
                 `;
             });
             sidebar.innerHTML = suggHtml;
-        });
+        }); // <-- DẤU ĐÓNG NÀY ( ) CỦA onValue RẤT HAY BỊ THIẾU
     </script>
 </body>
 </html>
