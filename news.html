@@ -6,18 +6,12 @@
     <!-- THẺ META ĐỘNG CHO MẠNG XÃ HỘI -->
     <meta property="og:site_name" content="DIY Việt Nam">
     <meta property="og:type" content="article">
-    <meta id="meta-url" property="og:url" content="">
+    <meta id="meta-url" property="og:url" content="https://diyvietnam.vercel.app/news.html">
     <meta id="meta-title" property="og:title" content="Điểm Tin Nhanh - AI Tổng Hợp">
     <meta id="meta-desc" property="og:description" content="Tổng hợp tin tức tự động và mẹo hay mỗi ngày.">
-    <meta id="meta-image" property="og:image" content="https://ibb.co/zhKJY3MP"> <!-- Link ảnh mặc định nếu không có ảnh bài -->
+    <meta id="meta-image" property="og:image" content="https://i.ibb.co/zhKJY3MP/default-banner.jpg">
+    
     <title>Điểm Tin Nhanh - AI Tổng Hợp</title>
-    <!-- Thẻ chống mù ảnh khi Share Facebook/Zalo -->
-    <meta property="og:title" content="DIY Việt Nam - Mẹo Vặt & Điểm Tin AI">
-    <meta property="og:description" content="Tổng hợp các mẹo vặt gia đình, công nghệ, sửa chữa DIY và điểm tin tức tự động bởi AI.">
-    <!-- Bạn hãy thay LINK_ANH_BIA_CUA_BAN bằng 1 link ảnh ImgBB chứa Logo hoặc Banner web của bạn -->
-    <meta property="og:image" content="https://ibb.co/zhKJY3MP">
-    <meta property="og:url" content="https://diyvietnam.vercel.app/">
-    <meta property="og:type" content="website">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" type="image/png">
     <style>
         * { box-sizing: border-box; }
@@ -81,7 +75,8 @@
         .pag-btn.active { background: #3498db; color: white; border-color: #3498db; }
         .back-btn { display: inline-block; background: #e9ecef; color: #495057; padding: 8px 16px; text-decoration: none; border-radius: 6px; font-weight: 600; margin-bottom: 20px; transition: 0.2s; }
         .back-btn:hover { background: #dde2e6; }
-/* Kháng lỗi khoảng trắng khổng lồ cho khung Shopee */
+
+        /* Kháng lỗi khoảng trắng khổng lồ cho khung Shopee */
         .shopee-box, .shopee-box * {
             white-space: normal !important;
             line-height: 1.5 !important;
@@ -89,10 +84,10 @@
         }
         .shopee-box { box-sizing: border-box; }
         .shopee-box img { max-width: 100%; height: auto; }
+
         /* Tối ưu Mobile */
         @media (max-width: 800px) { .page-layout { grid-template-columns: 1fr; } }
-       @media (max-width: 600px) {
-            /* Các thuộc tính mobile cũ của bạn giữ nguyên... */
+        @media (max-width: 600px) {
             body { padding: 8px; }
             header { padding: 20px 10px; margin-bottom: 20px; border-radius: 8px; }
             h1 { font-size: 1.6em; }
@@ -102,7 +97,6 @@
             .news-footer, .share-box-news { flex-direction: column; align-items: stretch; text-align: center; }
             .share-btn-news { width: 100%; box-sizing: border-box; padding: 12px; margin-bottom: 5px; }
             
-            /* TỐI ƯU KHUNG SHOPEE MOBILE (MỚI) */
             .shopee-box { flex-direction: column !important; text-align: center !important; gap: 15px !important; padding: 15px !important; }
             .shopee-box-img { width: 100% !important; height: auto !important; max-width: 180px; margin: 0 auto; }
             .shopee-box-info { width: 100% !important; text-align: center !important; }
@@ -146,10 +140,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Các biến phân trang
         let globalNewsArray = [];
         let currentPage = 1;
-        const itemsPerPage = 10; // Hiện 10 bản tin 1 trang
+        const itemsPerPage = 10;
 
         // 1. TẢI DANH SÁCH TIN TỨC AI
         const newsRef = query(ref(db, 'news'), orderByChild('timestamp'));
@@ -163,33 +156,32 @@
             let newsArray = [];
             snapshot.forEach((child) => { 
                 let data = child.val();
-                data.id = child.key; // Gắn ID cho Bài viết để Share
+                data.id = child.key;
                 newsArray.push(data); 
             });
             newsArray.reverse(); 
             globalNewsArray = newsArray;
 
-            // Kiểm tra xem khách có đang bấm vào link Share 1 bài cụ thể không
             const urlParams = new URLSearchParams(window.location.search);
             const targetId = urlParams.get('id');
 
-           if (targetId) {
+            if (targetId) {
                 const specificNews = newsArray.find(n => n.id === targetId);
                 if (specificNews) {
                     document.getElementById('pagination-box').style.display = 'none';
                     container.innerHTML = `<a href="news.html" class="back-btn">&larr; Xem tất cả bản tin</a>` + renderNewsCard(specificNews);
 
-                    // --- ĐOẠN CODE MỚI: TỰ ĐỘNG CẬP NHẬT THẺ META CHO FACEBOOK ---
+                    // Cập nhật thẻ Meta động cho Facebook
                     document.getElementById('meta-title').setAttribute('content', specificNews.title);
                     document.getElementById('meta-url').setAttribute('content', window.location.href);
-                    
-                    // Tự động tìm ảnh từ nội dung hoặc dùng ảnh mặc định của web
-                    // (Hoặc nếu bạn muốn dùng luôn ảnh của khung Shopee có sẵn trong bài)
                     document.getElementById('meta-desc').setAttribute('content', specificNews.category + " - " + specificNews.title);
                 } else {
                     container.innerHTML = `<p style="text-align:center; color:red;">Bản tin này không tồn tại.</p><a href="news.html">Quay lại</a>`;
                 }
+            } else {
+                renderPaginatedNews();
             }
+        });
 
         // Hàm render giao diện phân trang
         window.changePage = function(page) {
@@ -212,7 +204,6 @@
             });
             container.innerHTML = html;
 
-            // Render nút bấm phân trang
             if (totalPages > 1) {
                 let pagHtml = '';
                 if (currentPage > 1) pagHtml += `<button class="pag-btn" onclick="changePage(${currentPage - 1})">« Trước</button>`;
@@ -229,7 +220,6 @@
             }
         }
 
-        // Hàm tạo 1 thẻ HTML Tin tức hoàn chỉnh
         function renderNewsCard(news) {
             const date = new Date(news.timestamp).toLocaleString('vi-VN');
             const shareUrl = window.location.origin + '/news.html?id=' + news.id; 
