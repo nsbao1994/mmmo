@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- THẺ META ĐỘNG CHO MẠNG XÃ HỘI -->
+    <meta property="og:site_name" content="DIY Việt Nam">
+    <meta property="og:type" content="article">
+    <meta id="meta-url" property="og:url" content="">
+    <meta id="meta-title" property="og:title" content="Điểm Tin Nhanh - AI Tổng Hợp">
+    <meta id="meta-desc" property="og:description" content="Tổng hợp tin tức tự động và mẹo hay mỗi ngày.">
+    <meta id="meta-image" property="og:image" content="https://ibb.co/zhKJY3MP"> <!-- Link ảnh mặc định nếu không có ảnh bài -->
     <title>Điểm Tin Nhanh - AI Tổng Hợp</title>
     <!-- Thẻ chống mù ảnh khi Share Facebook/Zalo -->
     <meta property="og:title" content="DIY Việt Nam - Mẹo Vặt & Điểm Tin AI">
@@ -166,20 +173,23 @@
             const urlParams = new URLSearchParams(window.location.search);
             const targetId = urlParams.get('id');
 
-            if (targetId) {
-                // HỢP LỆ: KIẾM BÀI VIẾT VÀ CHỈ HIỂN THỊ ĐÚNG BÀI ĐÓ
+           if (targetId) {
                 const specificNews = newsArray.find(n => n.id === targetId);
                 if (specificNews) {
-                    document.getElementById('pagination-box').style.display = 'none'; // Giấu phân trang
+                    document.getElementById('pagination-box').style.display = 'none';
                     container.innerHTML = `<a href="news.html" class="back-btn">&larr; Xem tất cả bản tin</a>` + renderNewsCard(specificNews);
+
+                    // --- ĐOẠN CODE MỚI: TỰ ĐỘNG CẬP NHẬT THẺ META CHO FACEBOOK ---
+                    document.getElementById('meta-title').setAttribute('content', specificNews.title);
+                    document.getElementById('meta-url').setAttribute('content', window.location.href);
+                    
+                    // Tự động tìm ảnh từ nội dung hoặc dùng ảnh mặc định của web
+                    // (Hoặc nếu bạn muốn dùng luôn ảnh của khung Shopee có sẵn trong bài)
+                    document.getElementById('meta-desc').setAttribute('content', specificNews.category + " - " + specificNews.title);
                 } else {
                     container.innerHTML = `<p style="text-align:center; color:red;">Bản tin này không tồn tại.</p><a href="news.html">Quay lại</a>`;
                 }
-            } else {
-                // TRANG CHỦ: HIỂN THỊ PHÂN TRANG
-                renderPaginatedNews();
             }
-        });
 
         // Hàm render giao diện phân trang
         window.changePage = function(page) {
