@@ -20,10 +20,11 @@ class handler(BaseHTTPRequestHandler):
                     'databaseURL': 'https://mmo-1-a7a47-default-rtdb.asia-southeast1.firebasedatabase.app/' 
                 })
 
-            # Lấy ID bài viết từ URL
+            # 1. LẤY ID VÀ LOẠI BÀI VIẾT TỪ URL
             parsed_path = urllib.parse.urlparse(self.path)
             query_params = urllib.parse.parse_qs(parsed_path.query)
             article_id = query_params.get('id', [None])[0]
+            post_type = query_params.get('type', ['article'])[0] # Mặc định là bài Blog nếu không có type
 
             if not article_id:
                 self.send_response(302)
@@ -31,8 +32,9 @@ class handler(BaseHTTPRequestHandler):
                 self.end_headers()
                 return
 
-            # Gọi dữ liệu bài viết từ Firebase
-            article_ref = db.reference(f'articles/{article_id}')
+            # 2. CHỌN NHÁNH DATABASE LINH HOẠT TÙY THEO LOẠI BÀI
+            db_node = "news" if post_type == "news" else "articles"
+            article_ref = db.reference(f'{db_node}/{article_id}')
             article = article_ref.get()
 
             if not article:
@@ -41,16 +43,24 @@ class handler(BaseHTTPRequestHandler):
                 self.end_headers()
                 return
 
-            # Xử lý hình ảnh (Ưu tiên ảnh tự nhập, nếu không lấy ảnh AI)
-            title = article.get('title', 'DIY Việt Nam - Review Sản Phẩm')
-            promptText = article.get('image_prompt') or title or 'technology product'
-            aiImageUrl = f"https://image.pollinations.ai/prompt/{urllib.parse.quote(promptText)}?width=1200&height=630&nologo=true"
-            finalImageUrl = article.get('custom_img') if article.get('custom_img') else aiImageUrl
+            # 3. TẠO LINK CHUYỂN HƯỚNG VÀ XỬ LÝ HÌNH ẢNH/TIÊU ĐỀ
+            if post_type == "news":
+                # Xử lý riêng cho trang News
+                real_article_url = f"/news.html?id={article_id}"
+                title = article.get('title', 'Điểm Tin Nhanh - AI Tổng Hợp')
+                desc = article.get('category', 'Tin tức') + " - Bản tin tổng hợp bằng AI."
+                # Cố định ảnh ImgBB cho trang News
+                finalImageUrl = "https://i.ibb.co/zhKJY3MP/default-banner.jpg" 
+            else:
+                # Xử lý cho trang Blog (Giữ nguyên logic cũ của bạn)
+                real_article_url = f"/?id={article_id}"
+                title = article.get('title', 'DIY Việt Nam - Review Sản Phẩm')
+                desc = "Xem ngay đánh giá chi tiết và nhận mã giảm giá Freeship trên Shopee!"
+                promptText = article.get('image_prompt') or title or 'technology product'
+                aiImageUrl = f"https://image.pollinations.ai/prompt/{urllib.parse.quote(promptText)}?width=1200&height=630&nologo=true"
+                finalImageUrl = article.get('custom_img') if article.get('custom_img') else aiImageUrl
 
-            # Link bài viết thực tế để chuyển hướng người dùng
-            real_article_url = f"/?id={article_id}"
-
-            # TẠO GIAO DIỆN ẢO DÀNH RIÊNG CHO BOT FACEBOOK/ZALO
+            # 4. TẠO GIAO DIỆN ẢO DÀNH RIÊNG CHO BOT FACEBOOK/ZALO
             html_content = f"""
             <!DOCTYPE html>
             <html lang="vi">
@@ -59,7 +69,7 @@ class handler(BaseHTTPRequestHandler):
                 <title>{title}</title>
                 <!-- Thẻ Meta cho Facebook và Zalo -->
                 <meta property="og:title" content="{title}" />
-                <meta property="og:description" content="Xem ngay đánh giá chi tiết và nhận mã giảm giá Freeship trên Shopee!" />
+                <meta property="og:description" content="{desc}" />
                 <meta property="og:image" content="{finalImageUrl}" />
                 <meta property="og:type" content="article" />
                 <meta property="og:image:width" content="1200" />
