@@ -222,7 +222,7 @@
 
         function renderNewsCard(news) {
             const date = new Date(news.timestamp).toLocaleString('vi-VN');
-            const shareUrl = window.location.origin + '/news.html?id=' + news.id; 
+           const shareUrl = window.location.origin + '/api/share?id=' + news.id + '&type=news';
             
             let sourceLink = '';
             if (news.source) {
