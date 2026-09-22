@@ -13,6 +13,8 @@
     <meta property="og:type" content="website">
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" type="image/png">
     <style>
+        * { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; }
         :root { --primary-color: #0066cc; --accent-color: #ee4d2d; --bg-color: #f4f6f9; --text-color: #333; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: var(--bg-color); color: var(--text-color); }
         
@@ -25,26 +27,32 @@
         .nav-menu a:hover { background: #f0f0f0; }
         .nav-menu a.active { background: #2c3e50; color: white; border-color: #2c3e50; }
 
-        .page-layout { display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; align-items: start; }
+        .page-layout { display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; align-items: start; max-width: 100%; }
         
-        .news-container { display: flex; flex-direction: column; gap: 20px; }
-        .news-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #3498db; }
+        .news-container { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        .news-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-left: 5px solid #3498db; max-width: 100%; overflow: hidden; }
         
         .news-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .news-category { background: #e3f2fd; color: #0066cc; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
         .ai-badge { background: #fdf2e9; color: #d35400; padding: 4px 10px; border-radius: 20px; font-size: 0.8em; font-weight: bold; display: flex; align-items: center; gap: 5px; border: 1px solid #fad7a1; }
         
-        .news-title { font-size: 1.4em; color: #2c3e50; margin: 0 0 15px 0; line-height: 1.4; }
+        .news-title { font-size: 1.4em; color: #2c3e50; margin: 0 0 15px 0; line-height: 1.4; word-break: break-word; }
         .news-title a { color: inherit; text-decoration: none; transition: 0.2s; }
         .news-title a:hover { color: #3498db; }
         
-        .news-content { line-height: 1.7; color: #444; font-size: 1.05em; margin-bottom: 15px; white-space: pre-wrap; word-wrap: break-word; }
+        .news-content { line-height: 1.7; color: #444; font-size: 1.05em; margin-bottom: 15px; white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%; }
+        .news-content img, .news-content video, .news-content iframe, .news-content table {
+            max-width: 100% !important;
+            width: auto !important;
+            height: auto !important;
+        }
+        .news-content table { display: block; overflow-x: auto; }
         .news-footer { border-top: 1px dashed #eee; padding-top: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; color: #777; flex-wrap: wrap; gap: 10px; }
         .news-source a { color: #3498db; text-decoration: none; font-weight: bold; }
         .news-source a:hover { text-decoration: underline; }
 
         /* Khung Sidebar */
-        .sidebar { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: sticky; top: 20px; }
+        .sidebar { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); position: sticky; top: 20px; min-width: 0; }
         .sidebar-title { font-size: 1.25em; color: var(--accent-color); border-bottom: 2px dashed #eee; padding-bottom: 12px; margin-top: 0; margin-bottom: 20px; }
         .suggested-articles { display: flex; flex-direction: column; gap: 18px; }
         .sugg-card { display: flex; gap: 12px; text-decoration: none; color: #333; align-items: center; transition: 0.2s; }
@@ -70,7 +78,10 @@
         .shopee-box, .shopee-box * {
             white-space: normal !important;
             line-height: 1.5 !important;
+            max-width: 100%;
         }
+        .shopee-box { box-sizing: border-box; }
+        .shopee-box img { max-width: 100%; height: auto; }
         /* Tối ưu Mobile */
         @media (max-width: 800px) { .page-layout { grid-template-columns: 1fr; } }
        @media (max-width: 600px) {
